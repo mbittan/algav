@@ -6,6 +6,7 @@ briandais_t* new_briandais(char key, briandais_t *son, briandais_t *brother) {
   tree->key = key;
   tree->son = son;
   tree->brother = brother;
+  tree->cpt = 1;
 
   return tree;
 }
@@ -53,6 +54,7 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
   }
   else if(*word == tree->key) {
     printf("*word == tree->key : %c = %c\n", *word, tree->key);
+    tree->cpt++;
     tree->son = insert_briandais(tree->son, word+1);
     return tree;
   }
@@ -61,16 +63,71 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
   return tree;
 }
 
-/* int delete_briandais(briandais_t *tree, char* word) { */
-/*   if(is_empty_briandais(tree)) { */
-/*     if(*word == '\0') { */
-      
-/*       return 1; */
-/*     } */
-/*     return -1; */
-/*   } */
-  
-/* } */
+int delete_briandais(briandais_t **tree, char* word) {
+  int r;
+  briandais_t *bros_bro, *sons_bro;
+
+  printf("%s : ", word);
+  if(is_empty_briandais(*tree)) {
+    printf("tree is empty ");
+    if(*word == '\0') {
+      printf("word is $\n");
+      destroy_briandais(tree);
+      *tree = NULL;
+      return 1;
+    }
+    printf("word is not empty (-1)\n");
+    return -1;
+  }
+  if(*word == '\0') {
+    printf("tree not empty and word=$ (-1)\n");
+    return -1;
+  }
+
+  if(*word == (*tree)->key) {
+    printf("*word = tree->key : %c = %c\n", *word, (*tree)->key);
+    sons_bro = (*tree)->son->brother;
+    if(sons_bro != NULL)
+      printf("sons_bro->key = %c\n", sons_bro->key);
+    if((r = delete_briandais(&((*tree)->son), word+1)) != -1) {
+      (*tree)->cpt--;
+      if(r == 1)
+	(*tree)->son = sons_bro;
+      printf("deletion ok : %c->cpt = %d\n", (*tree)->key, (*tree)->cpt);
+      if((*tree)->cpt == 0) {
+	printf("destroy from %s\n", word);
+	destroy_briandais(tree);
+	*tree = NULL;
+	return 1;
+      }
+      return 0;
+    }
+  }
+  else if(*word > (*tree)->key) {
+    printf("*word > tree->key : %c > %c\n", *word, (*tree)->key);
+    if((*tree)->brother != NULL)
+      bros_bro = (*tree)->brother->brother;
+    r = delete_briandais(&((*tree)->brother), word);
+    if(r == 1)
+      (*tree)->brother = bros_bro;
+    return r;
+  }
+  else {
+    printf("*word < tree->key : %c < %c\n", *word, (*tree)->key);
+    return -1;
+  }
+  return -1;
+}
+
+int destroy_briandais(briandais_t **tree) {
+  if(*tree != NULL) {
+    if((*tree)->son != NULL)
+      destroy_briandais(&((*tree)->son));
+    free(*tree);
+  }
+  *tree = NULL;
+  return 0;
+}
 
 void print_briandais_rec(briandais_t *tree, int height) {
   int i;
@@ -95,7 +152,6 @@ int main() {
   briandais_t *tree=NULL;
   char *m1, *m2, *m3;
 
-  //tree = new_empty_briandais();
   m1 = malloc(6*sizeof(char));
   m2 = malloc(10*sizeof(char));
   m3 = malloc(6*sizeof(char));
@@ -111,6 +167,16 @@ int main() {
   tree = insert_briandais(tree, m2);
   print_briandais(tree);
   tree = insert_briandais(tree, m3);
+  print_briandais(tree);
+  printf("Remove bonbon : %d\n", delete_briandais(&tree, "bonbon"));
+  print_briandais(tree);
+  printf("Remove salam  : %d\n", delete_briandais(&tree, m1));
+  print_briandais(tree);
+  printf("Remove salim  : %d\n", delete_briandais(&tree, m3));
+  print_briandais(tree);
+  printf("Remove bonjour  : %d\n", delete_briandais(&tree, m2));
+  print_briandais(tree);
+  tree = insert_briandais(tree, m1);
   print_briandais(tree);
 
   free(m1);
