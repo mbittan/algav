@@ -17,10 +17,12 @@ TrieHybride * trie_hybride(char c, char fin, TrieHybride * inf,
 }
 
 void free_trie_hybride(TrieHybride * t){
-  free_trie_hybride(t->inferieur);
-  free_trie_hybride(t->egal);
-  free_trie_hybride(t->superieur);
-  free(t);
+  if(t){
+    free_trie_hybride(t->inferieur);
+    free_trie_hybride(t->egal);
+    free_trie_hybride(t->superieur);
+    free(t);
+  }
 }
 
 char racine(TrieHybride * t){
@@ -55,7 +57,6 @@ TrieHybride * creer_mot(char * mot){
   for(i=n-2;i>=0;i--){
     t=trie_hybride(mot[i],0,NULL,t,NULL);
   }
-
   return t;
 }
 
@@ -124,8 +125,6 @@ void print_trie_hybride(TrieHybride * t){
     print_trie_hybride(inferieur(t));
     print_trie_hybride(egal(t));
     print_trie_hybride(superieur(t));
-  }else{
-    printf("VIDE !\n");
   }
 }
 
@@ -134,10 +133,10 @@ TrieHybride * ajouter_trie_hybride(char * mot, TrieHybride *t){
   if(est_trie_vide(t)){
     return creer_mot(mot);
   }else{
-    if(n==0){
-      t->fin=0;
+    if(n==1 && mot[0]==racine(t)){
+      t->fin=1;
       return t;
-    }
+    } 
     if(mot[0]<racine(t)){
       t->inferieur=ajouter_trie_hybride(mot,inferieur(t));
       return t;
