@@ -1,29 +1,22 @@
 #include "trieHybride_simple.h"
+#include "gestion_fichier.h"
 
 int main(int argc, char ** argv){
   TrieHybride * t = NULL;
   int res;
   char buff[100];
-  FILE * f=fopen("./data/shakespeare/lear.txt","r");
+
+  int fd=ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
+  if(fd<0){
+    perror("open");
+    exit(1);
+  }
   memset(buff,'\0',100*sizeof(char));
-  while(fscanf(f,"%s ",buff)!=EOF){
+  while(mot_suivant(fd,buff)){
+    printf("%s\n",buff);
     t=ajouter_trie_hybride(buff,t);
-    memset(buff,'\0',100*sizeof(char));
   }
-  fclose(f);  
-
-  f=fopen("./data/shakespeare/lear.txt","r");
-  memset(buff,'\0',100*sizeof(char));
-  while(fscanf(f,"%s ",buff)!=EOF){
-    res=recherche_trie_hybride(t,buff);
-    if(!res){
-      printf("mot %s non trouve !\n",buff);
-    }
-    memset(buff,'\0',100*sizeof(char));
-  }
-  fclose(f);
-  generer_fichier_xml("test.xml",t);
-  free_trie_hybride(t);
-
-  return EXIT_FAILURE;
+  res=comptage_mots(t);
+  printf("%d\n",res);
+  return EXIT_SUCCESS;
 }
