@@ -9,4 +9,8 @@
 */
 int recherche_trie_hybride(TrieHybride * t, char * mot);
 
+/*
+  Compte le nombre de mots present dans le trie hybride t
+*/
+int comptage_mots(TrieHybride * t);
 #endif

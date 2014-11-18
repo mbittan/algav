@@ -18,3 +18,18 @@ int recherche_trie_hybride(TrieHybride * t, char * mot){
     }
   }
 }
+
+int comptage_mots(TrieHybride * t){
+  if(t==NULL){
+    return 0;
+  }
+  int inf,eq,sup;
+  inf=comptage_mots(t->inferieur);
+  eq=comptage_mots(t->egal);
+  sup=comptage_mots(t->superieur);
+  if(t->fin){
+    return 1+inf+eq+sup;
+  }else{
+    return inf+eq+sup;
+  }
+}
