@@ -1,5 +1,7 @@
 #include "briandais.h"
 
+#define MAX(a,b) ((a) < (b) ? (b) : (a))
+
 briandais_t* new_briandais(char key, briandais_t *son, briandais_t *brother) {
   briandais_t *tree = malloc(sizeof(briandais_t));
 
@@ -134,8 +136,9 @@ int destroy_briandais(briandais_t **tree) {
 
 void print_briandais_rec(briandais_t *tree, int height) {
   int i;
-  if(tree == NULL)
+  if(tree == NULL) {
     return;
+  }
   if(tree->key == '\0')
     printf("$");
   else
@@ -178,7 +181,41 @@ int count_briandais(briandais_t *tree) {
   return count_briandais(tree->son) + count_briandais(tree->brother);
 }
 
+int count_null_briandais(briandais_t *tree) {
+  if(tree == NULL)
+    return 1;
+  return count_null_briandais(tree->son) + count_null_briandais(tree->brother);
+}
 
+void list_briandais(briandais_t *tree, char **list) {
+  
+}
+
+int height_briandais(briandais_t *tree) {
+  int bro, son;
+  if(tree == NULL)
+    return 0;
+  son = height_briandais(tree->son) + 1;
+  bro = height_briandais(tree->brother);
+  return MAX(son, bro);
+}
+
+int prefix_briandais(briandais_t *tree, char *word) {
+  int n=0;
+  if(tree == NULL)
+    return 0;
+  if(*word == '\0')
+    return -1;
+  if(tree->key == *word)
+    n = prefix_briandais(tree->son, word+1);
+  if(tree->key < *word)
+    n = prefix_briandais(tree->brother, word);
+  if(n == -1)
+    return tree->cpt;
+  if(n > 0)
+    return n;
+  return 0;
+}
 
 int main() {
   briandais_t *tree=NULL;
@@ -199,8 +236,19 @@ int main() {
   printf("Search puisque : %d\n", search_briandais(tree, "puisque"));
   printf("Search un : %d\n", search_briandais(tree, "un"));
 
-  printf("\n\nTesting count :\n");
+  printf("\nTesting count :\n");
   printf("Count (should be 34) : %d\n", count_briandais(tree));
+
+  printf("\nTesting NULL pointers count :\n");
+  printf("Count : %d\n", count_null_briandais(tree));
+
+  printf("\nTesting height of tree (should be 15) :\n");
+  printf("Height : %d\n", height_briandais(tree));
+
+  printf("\nTesting prefix in Briandais :\n");
+  printf("dactylo (should be 2) : %d\n", prefix_briandais(tree, "dactylo"));
+  printf("c (should be 5) : %d\n", prefix_briandais(tree, "c"));
+  printf("sa (should be 0) : %d\n", prefix_briandais(tree, "sa"));
   
   destroy_briandais(&tree);
 

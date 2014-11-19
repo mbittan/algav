@@ -45,7 +45,16 @@ int search_briandais(briandais_t *tree, char *word);
 /* Count the number of words in tree */
 int count_briandais(briandais_t *tree);
 
+/* Count the number of null pointers in tree */
+int count_null_briandais(briandais_t *tree);
+
 /* List words in Briandais tree */
 void list_briandais(briandais_t *tree, char **list);
+
+/* Returns the height of the Briandais trie tree */
+int height_briandais(briandais_t *tree);
+
+/* Checks how many words in tree word is the prefix */
+int prefix_briandais(briandais_t *tree, char *word);
 
 #endif
