@@ -3,6 +3,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+#include "gestion_fichier.h"
 
 typedef struct _briandais_ {
   char key;
@@ -37,6 +40,12 @@ int destroy_briandais(briandais_t **tree);
 void print_briandais(briandais_t *tree);
 
 /* Checks whether word is in tree */
-int is_in_briandais(briandais_t *tree, char *word);
+int search_briandais(briandais_t *tree, char *word);
+
+/* Count the number of words in tree */
+int count_briandais(briandais_t *tree);
+
+/* List words in Briandais tree */
+void list_briandais(briandais_t *tree, char **list);
 
 #endif
