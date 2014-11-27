@@ -15,9 +15,10 @@ int main(int argc, char ** argv){
   while(mot_suivant(fd,buff)){
     printf("%s\n",buff);
     t=ajouter_trie_hybride(buff,t);
-  }
+   } 
+  t=ajouter_trie_hybride("toto",t);
   res=comptage_mots(t);
   printf("%d\n",res);
-  generer_fichier_latex("test.tex",t);
+  generer_fichier_latex("toto.dot",t);
   return EXIT_SUCCESS;
 }
