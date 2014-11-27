@@ -1,9 +1,4 @@
-CC = gcc
-CFLAGS = -Wall -g
-SRC = src
-INC = include
-OBJ = obj
-BIN = bin
+include makefile.inc
 
 all : directories test_exemple_base briandais
 
@@ -41,9 +36,18 @@ $(OBJ)/trieHybride_simple.o : $(SRC)/trieHybride_simple.c $(INC)/trieHybride_sim
 $(OBJ)/briandais.o: $(SRC)/briandais.c $(INC)/briandais.h
 	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC)
 
+rapport:
+	cd $(RAPPORT) && make
+
 clean :
 	rm -rf $(OBJ)/ $(BIN)/ *~ \#* .\#*
 	rm -f $(SRC)/*~ $(SRC)/\#* $(SRC)/.\#*
 	rm -f $(INC)/*~ $(INC)/\#* $(INC)/.\#*
 
-.PHONY: all clean test_exemple_base briandais
+cleanall:
+	cd $(RAPPORT) && make cleanall
+
+force_look:
+		true
+
+.PHONY: all clean test_exemple_base briandais cleanall rapport
