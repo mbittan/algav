@@ -146,8 +146,10 @@ void print_briandais_rec(briandais_t *tree, int height) {
   print_briandais_rec(tree->son, height+1);
   if(tree->brother != NULL) {
     printf("\n");
-    for(i=0; i<height; i++)
-    printf(" ");
+    for(i=0; i<height-1; i++)
+      printf(" ");
+    if(height>0)
+      printf("|");
   }
   print_briandais_rec(tree->brother, height);
 }
@@ -217,8 +219,32 @@ int prefix_briandais(briandais_t *tree, char *word) {
   return 0;
 }
 
+briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
+  if(B == NULL)
+    return A;
+  if(A == NULL)
+    return B;
+
+  if(A->key > B->key) {
+    B->brother = A;
+    return B;
+  }
+
+  if(A->key == B->key) {
+    A->brother = merge_briandais(A->brother, B->brother);
+    A->son = merge_briandais(A->son, B->son);
+  }
+
+  if(A->key < B->key) {
+    A->brother = merge_briandais(A->brother, B);
+  }
+
+  return A;
+}
+
 int main() {
   briandais_t *tree=NULL;
+  briandais_t *tree2=NULL;
 
   int fd = ouvrir_fichier(DATA_DIR"exemple_de_base");
   char mot[50];
@@ -226,7 +252,12 @@ int main() {
   while(mot_suivant(fd, mot) != 0) {
     tree = insert_briandais(tree, mot);
   }
+  tree2 = insert_briandais(tree2, "saperlipopette");
   
+  print_briandais(tree);
+
+  printf("\nMerge :\n");
+  tree = merge_briandais(tree, tree2);
   print_briandais(tree);
 
   printf("\n\nTesting search :\n");

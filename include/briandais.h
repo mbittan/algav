@@ -57,4 +57,7 @@ int height_briandais(briandais_t *tree);
 /* Checks how many words in tree word is the prefix */
 int prefix_briandais(briandais_t *tree, char *word);
 
+/* Merge two Briandais trees */
+briandais_t* merge_briandais(briandais_t *A, briandais_t *B);
+
 #endif
