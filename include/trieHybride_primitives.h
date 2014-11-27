@@ -10,7 +10,7 @@
 /*
   Créé un trie hybride ayant comme racine c et comme fils inf, eq et sup.
 */
-TrieHybride *trie_hybride(char c, char fin, TrieHybride * inf, 
+TrieHybride * trie_hybride(char c, char fin, TrieHybride * inf, 
 			   TrieHybride * eq, TrieHybride * sup);
 
 /*
@@ -44,12 +44,12 @@ TrieHybride * superieur(TrieHybride * t);
 
 /*
   Renvoie 1 si t est un trie vide, 0 sinon.
- */
+*/
 int est_trie_vide(TrieHybride * t);
 
 /*
   Creer le trie hybride representant le mot passe en parametre
- */
+*/
 TrieHybride * creer_mot(char * mot);
 
 /*
@@ -58,6 +58,10 @@ TrieHybride * creer_mot(char * mot);
 */
 void generer_fichier_xml(char * nom_fichier, TrieHybride * t);
 
+/*
+  Crée le fichier (latex) répresentant le trie hybride passee en parametre
+ */
+void generer_fichier_latex(char * nom_fichier, TrieHybride * t);
 /*
   Affiche le trie hybride sur la sortie standard (moche)
 */

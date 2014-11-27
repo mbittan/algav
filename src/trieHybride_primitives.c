@@ -119,6 +119,37 @@ void generer_fichier_xml(char * nom_fichier, TrieHybride * t){
   fclose(f);
 }
 
+void remplir_latex(FILE * f, TrieHybride * t){
+  if(t){
+    fprintf(f,"[.%c ",t->c);
+    remplir_latex(f,t->inferieur);
+    remplir_latex(f,t->egal);
+    remplir_latex(f,t->superieur);
+    fprintf(f,"]");
+  }
+}
+
+void generer_fichier_latex(char * nom_fichier, TrieHybride * t){
+  FILE * f;
+  if((f=fopen(nom_fichier,"w"))==NULL){
+    perror("fopen");
+    exit(EXIT_FAILURE);
+  }
+  fprintf(f,"\\documentclass{article}\n");
+  fprintf(f,"\\usepackage{tikz-qtree}\n");
+  fprintf(f,"\\usepackage{verbatim}\n");
+  fprintf(f,"\\usepackage[active,tightpage]{preview}\n");
+  fprintf(f,"\\PreviewEnvironment{tikzpicture}\n");
+  fprintf(f,"\\begin{document}\n");
+  fprintf(f,"\\begin{tikzpicture}\n");
+  fprintf(f,"\\Tree\n"); 
+  remplir_latex(f,t);
+  fprintf(f,"\\end{tikzpicture}\n");
+  fprintf(f,"\\end{document}\n");
+
+  fclose(f);
+}
+
 void print_trie_hybride(TrieHybride * t){
   if(t){
     printf("Rac : %c, fin %d\n",t->c,t->fin);

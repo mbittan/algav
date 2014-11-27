@@ -5,7 +5,7 @@ int main(int argc, char ** argv){
   TrieHybride * t = NULL;
   int res;
   char buff[100];
-
+ 
   int fd=ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
   if(fd<0){
     perror("open");
@@ -18,5 +18,6 @@ int main(int argc, char ** argv){
   }
   res=comptage_mots(t);
   printf("%d\n",res);
+  generer_fichier_latex("test.tex",t);
   return EXIT_SUCCESS;
 }
