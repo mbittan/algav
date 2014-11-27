@@ -21,45 +21,39 @@
     text width=1.5em, very thick},% arbre rouge noir, noeud rouge
   arn_x/.style = {treenode, rectangle, draw=black,
     minimum width=0.5em, minimum height=0.5em},% arbre rouge noir, nil
-  racine/.style = {rectangle split, rectangle split horizontal, rounded corners=5pt},
-  fils/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, anchor=north,
-                   edge from parent path={(\tikzparentnode) |- (\tikzchildnode.north)},
+  racine/.style = {rectangle split, rectangle split horizontal, rounded corners=5pt, sibling distance=5em},
+  fils/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, grow=down, anchor=north,
+                   edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.north), sibling distance=5em},
                    rectangle split parts=3, 
                    rectangle split draw splits=false},
-  frere/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, anchor=west,
-                   edge from parent path={(\tikzparentnode) -- (\tikzchildnode.west)},
+  frere/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, grow=right, anchor=west,
+                   edge from parent path={(\tikzparentnode.east) -- (\tikzchildnode.west), sibling distance=5em},
                    rectangle split parts=3, 
                    rectangle split draw splits=false}
 }
 
 \begin{document}
 \begin{tikzpicture}[->]
-%[->,>=stealth',level/.style={sibling distance = 5cm/#1,
-%      level distance = 1.5cm}]
-%  \node[name=data, rectangle split, 
-%    rectangle split horizontal, 
-%    rectangle split parts=3, 
-%    rectangle split draw splits=false, 
-%    draw, rounded corners=5pt] (main) 
-%       {A \nodepart{two} . 
-%         \nodepart{three} $\emptyset$};
 
-%       \node[name=data, rectangle split, 
-%         rectangle split horizontal, 
-%        rectangle split parts=3, 
-%         rectangle split draw splits=false, 
-%         draw, rounded corners=5pt] (main) 
-%            {B \nodepart{two} . 
-%              \nodepart{three} $\emptyset$};
+\node at (0,0) (1) {A};
 
-  
-  \node[racine]{A \nodepart{two} . 
-                  \nodepart{three} .}
-  child{ node[fils]{B \nodepart{two} .
-                      \nodepart{three} $\emptyset$}}
-  child{ node[frere]{R \nodepart{two} .
-                       \nodepart{three} $\emptyset$}};
-  
+\node at (0,-1) (3) {C};
+\draw (1) -- (3);
+
+\node at (0,-2) (4) {D};
+\draw (3) -- (4);
+
+\node at (0,-3) (6) {\$};
+\draw (4) -- (6);
+
+\node at (1,-2) (5) {E};
+\draw (4) -- (5);
+
+\node at (1, -3) (7) {\$};
+\draw (5) -- (7);
+
+\node at (2,0) (8) {B};
+\draw (1) -- (8);
 
 \end{tikzpicture}
 \end{document}
