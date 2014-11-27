@@ -14,5 +14,8 @@ clean:
 cleanall: clean
 	cd $(FIGURES) && make clean
 
+force_look:
+	true
+
 .PHONY: all clean cleanall
 
