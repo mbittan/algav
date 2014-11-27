@@ -242,11 +242,67 @@ briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
   return A;
 }
 
+int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
+  static int offset = 0;
+  static int node_id = 1;
+  int id, relative_id;
+
+  if(tree != NULL) {
+    id = node_id;
+    fprintf(f, "\\node at (%dpt,-%dpt) (%d) ",\
+	    offset*5, height*5, node_id++);
+    if(tree->key == '\0')
+      fprintf(f, "{$\\varepsilon$};\n");
+    else
+      fprintf(f, "{%c};\n", tree->key);
+    relative_id = export_to_latex_rec(tree->son, f, height+1);
+    if(relative_id) {
+      fprintf(f, "\\draw (%d) -- (%d);\n", id, relative_id);
+    }
+    if(tree->brother != NULL)
+      offset++;
+    relative_id = export_to_latex_rec(tree->brother, f, height);
+    if(relative_id) {
+      fprintf(f, "\\draw (%d) -- (%d);\n", id, relative_id);
+    }
+    return id;
+  }
+  return 0;
+}
+
+void export_to_latex(briandais_t *tree, char* filename) {
+  FILE *f;
+
+  if((f = fopen(filename,"w")) == NULL){
+    perror("fopen");
+    exit(EXIT_FAILURE);
+  }
+
+  /* Header of LaTeX file */
+  fprintf(f,"\\documentclass[fontsize=1pt]{scrartcl}\n\
+\\usepackage{tikz}\n\
+\\usepackage[graphics, active, tightpage]{preview}\n\
+\\PreviewEnvironment{tikzpicture}\n\
+\\begin{document}\n\
+\\begin{tikzpicture}[->]\n");
+
+  /* Body */
+  export_to_latex_rec(tree, f, 0);
+
+  /* End of file */
+  fprintf(f,"\\end{tikzpicture}\n\
+\\end{document}\n");
+
+  fclose(f);
+}
+
 int main() {
   briandais_t *tree=NULL;
   briandais_t *tree2=NULL;
+  briandais_t *tree_hamlet=NULL;
 
   int fd = ouvrir_fichier(DATA_DIR"exemple_de_base");
+  int fdh = ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
   char mot[50];
   
   while(mot_suivant(fd, mot) != 0) {
@@ -280,8 +336,18 @@ int main() {
   printf("dactylo (should be 2) : %d\n", prefix_briandais(tree, "dactylo"));
   printf("c (should be 5) : %d\n", prefix_briandais(tree, "c"));
   printf("sa (should be 0) : %d\n", prefix_briandais(tree, "sa"));
+
+  printf("\nCreating Hamlet tree...\n");
+  while(mot_suivant(fdh, mot) != 0) {
+    tree_hamlet = insert_briandais(tree_hamlet, mot);
+  }
+  printf("\nExporting Hamlet tree...\n");
+  export_to_latex(tree_hamlet, "hamlet.tex");
+  print_briandais(tree_hamlet);
   
   destroy_briandais(&tree);
+  destroy_briandais(&tree2);
+  destroy_briandais(&tree_hamlet);
 
   return EXIT_SUCCESS;
 }

@@ -60,4 +60,7 @@ int prefix_briandais(briandais_t *tree, char *word);
 /* Merge two Briandais trees */
 briandais_t* merge_briandais(briandais_t *A, briandais_t *B);
 
+/* Export to LaTeX */
+void export_to_latex(briandais_t *tree, char* filename);
+
 #endif
