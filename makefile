@@ -44,7 +44,7 @@ clean :
 	rm -f $(SRC)/*~ $(SRC)/\#* $(SRC)/.\#*
 	rm -f $(INC)/*~ $(INC)/\#* $(INC)/.\#*
 
-cleanall:
+cleanall: clean
 	cd $(RAPPORT) && make cleanall
 
 force_look:
