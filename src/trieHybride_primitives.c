@@ -119,13 +119,23 @@ void generer_fichier_xml(char * nom_fichier, TrieHybride * t){
   fclose(f);
 }
 
-void remplir_latex(FILE * f, TrieHybride * t){
+int remplir_latex(FILE * f, TrieHybride * t, int n){
   if(t){
-    fprintf(f,"[.%c ",t->c);
-    remplir_latex(f,t->inferieur);
-    remplir_latex(f,t->egal);
-    remplir_latex(f,t->superieur);
-    fprintf(f,"]");
+    int ninf,neq,nsup;
+    fprintf(f,"%d [label=\"%c\"];",n,t->c);
+    if(t->inferieur==NULL && t->egal==NULL && t->superieur==NULL){
+      return n+1;
+    }
+    ninf=remplir_latex(f,t->inferieur,n+1);
+    fprintf(f,"%d->%d\n",n,n+1);
+    neq=remplir_latex(f,t->egal,ninf);
+    fprintf(f,"%d->%d\n",n,ninf);
+    nsup=remplir_latex(f,t->superieur,neq);
+    fprintf(f,"%d->%d\n",n,neq);
+    return nsup+1;
+  }else{
+    fprintf(f,"%d [shape=point];\n",n);
+    return n+1;
   }
 }
 
@@ -135,18 +145,9 @@ void generer_fichier_latex(char * nom_fichier, TrieHybride * t){
     perror("fopen");
     exit(EXIT_FAILURE);
   }
-  fprintf(f,"\\documentclass{article}\n");
-  fprintf(f,"\\usepackage{tikz-qtree}\n");
-  fprintf(f,"\\usepackage{verbatim}\n");
-  fprintf(f,"\\usepackage[active,tightpage]{preview}\n");
-  fprintf(f,"\\PreviewEnvironment{tikzpicture}\n");
-  fprintf(f,"\\begin{document}\n");
-  fprintf(f,"\\begin{tikzpicture}\n");
-  fprintf(f,"\\Tree\n"); 
-  remplir_latex(f,t);
-  fprintf(f,"\\end{tikzpicture}\n");
-  fprintf(f,"\\end{document}\n");
-
+  fprintf(f,"digraph fichier {\n");
+  remplir_latex(f,t,1);
+  fprintf(f,"}\n");
   fclose(f);
 }
 
