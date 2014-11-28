@@ -9,7 +9,7 @@ rapport.pdf: rapport.tex
 	pdflatex $<
 
 clean:
-	rm -f *.aux *.log *.gz *.pdf
+	rm -f *.aux *.log *.gz *.pdf *~
 
 cleanall: clean
 	cd $(FIGURES) && make clean
