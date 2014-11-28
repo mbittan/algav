@@ -249,8 +249,8 @@ int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
 
   if(tree != NULL) {
     id = node_id;
-    fprintf(f, "\\node at (%dpt,-%dpt) (%d) ",\
-	    offset*5, height*5, node_id++);
+    fprintf(f, "\\node at (%d,-%d) (%d) ",\
+	    offset, height, node_id++);
     if(tree->key == '\0')
       fprintf(f, "{$\\varepsilon$};\n");
     else
@@ -279,7 +279,7 @@ void export_to_latex(briandais_t *tree, char* filename) {
   }
 
   /* Header of LaTeX file */
-  fprintf(f,"\\documentclass[fontsize=1pt]{scrartcl}\n\
+  fprintf(f,"\\documentclass{article}\n\
 \\usepackage{tikz}\n\
 \\usepackage[graphics, active, tightpage]{preview}\n\
 \\PreviewEnvironment{tikzpicture}\n\
