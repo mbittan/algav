@@ -33,3 +33,35 @@ int comptage_mots(TrieHybride * t){
     return inf+eq+sup;
   }
 }
+
+int listeMotsRec(TrieHybride * t, char * buff, int n){
+  if(t==NULL){
+    return 0;
+  }
+  listeMotsRec(t->inferieur,buff,n);
+  buff[n]=t->c;
+  buff[n+1]='\0';
+  if(t->fin){
+    printf("%s\n",buff);
+  }
+  listeMotsRec(t->egal,buff,n+1);
+  buff[n]='\0';
+  listeMotsRec(t->superieur,buff,n);
+  return 0;
+}
+
+void listeMots(TrieHybride * t){
+  char buff[100];
+  listeMotsRec(t,buff,0);
+}
+
+int comptageNil(TrieHybride * t){
+  if(t==NULL){
+    return 1;
+  }
+  int n1,n2,n3;
+  n1=comptageNil(t->inferieur);
+  n2=comptageNil(t->egal);
+  n3=comptageNil(t->superieur);
+  return n1+n2+n3;
+} 

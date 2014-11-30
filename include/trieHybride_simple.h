@@ -13,4 +13,13 @@ int recherche_trie_hybride(TrieHybride * t, char * mot);
   Compte le nombre de mots present dans le trie hybride t
 */
 int comptage_mots(TrieHybride * t);
+
+/*
+  Affiche la liste des mots dans l'ordre alphabetique
+*/
+void listeMots(TrieHybride * t);
+
+/*Compte le nombre de pointeur vers NULL
+ */
+int comptageNil(TrieHybride *t);
 #endif
