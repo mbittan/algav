@@ -17,9 +17,27 @@ int comptage_mots(TrieHybride * t);
 /*
   Affiche la liste des mots dans l'ordre alphabetique
 */
-void listeMots(TrieHybride * t);
+void liste_mots(TrieHybride * t);
 
-/*Compte le nombre de pointeur vers NULL
+/*
+  Compte le nombre de pointeur vers NULL
  */
-int comptageNil(TrieHybride *t);
+int comptage_nil(TrieHybride *t);
+
+/*
+  Renvoi la hauteur du trie hybride
+*/
+int hauteur(TrieHybride * t);
+
+/*
+  Renvoi la profondeur moyenne du trie hybride
+*/
+double profondeur_moyenne(TrieHybride * t);
+
+/*
+  Compte le nombre de mots du dictionnaire qui sont prefixes par le mot passe
+  en parametre
+*/
+int prefixe(TrieHybride * t, char * mot);
+
 #endif

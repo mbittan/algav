@@ -34,34 +34,82 @@ int comptage_mots(TrieHybride * t){
   }
 }
 
-int listeMotsRec(TrieHybride * t, char * buff, int n){
+int liste_mots_rec(TrieHybride * t, char * buff, int n){
   if(t==NULL){
     return 0;
   }
-  listeMotsRec(t->inferieur,buff,n);
+  liste_mots_rec(t->inferieur,buff,n);
   buff[n]=t->c;
   buff[n+1]='\0';
   if(t->fin){
     printf("%s\n",buff);
   }
-  listeMotsRec(t->egal,buff,n+1);
+  liste_mots_rec(t->egal,buff,n+1);
   buff[n]='\0';
-  listeMotsRec(t->superieur,buff,n);
+  liste_mots_rec(t->superieur,buff,n);
   return 0;
 }
 
-void listeMots(TrieHybride * t){
+void liste_mots(TrieHybride * t){
   char buff[100];
-  listeMotsRec(t,buff,0);
+  liste_mots_rec(t,buff,0);
 }
 
-int comptageNil(TrieHybride * t){
+int comptage_nil(TrieHybride * t){
   if(t==NULL){
     return 1;
   }
+
   int n1,n2,n3;
-  n1=comptageNil(t->inferieur);
-  n2=comptageNil(t->egal);
-  n3=comptageNil(t->superieur);
+  n1=comptage_nil(t->inferieur);
+  n2=comptage_nil(t->egal);
+  n3=comptage_nil(t->superieur);
   return n1+n2+n3;
 } 
+
+int max(int a, int b){
+  if(a<b){
+    return b;
+  }else{
+    return a;
+  }
+}
+int hauteur(TrieHybride *t){
+  if(t==NULL){
+   return 0;
+  }
+
+  int n1,n2,n3;
+  n1=hauteur(t->inferieur);
+  n2=hauteur(t->egal);
+  n3=hauteur(t->superieur);
+  return 1+max(max(n1,n2),n3); 
+}
+
+double profondeur_moyenne(TrieHybride * t){
+  if(t==NULL){
+    return 0;
+  }
+  int n1,n2,n3;
+  n1=hauteur(t->inferieur);
+  n2=hauteur(t->egal);
+  n3=hauteur(t->superieur);
+  return (n1+n2+n3)/3.0;
+}
+
+int prefixe(TrieHybride * t, char * mot){
+  if(t==NULL){
+    return 0;
+  }
+  int n = strlen(mot);
+  if(n==1 && mot[0]==racine(t)){
+    return t->fin+comptage_mots(egal(t));
+  }
+  if(mot[0]<racine(t)){
+    return prefixe(inferieur(t),mot);
+  }
+  if(mot[0]>racine(t)){
+    return prefixe(superieur(t),mot);
+  }
+  return prefixe(egal(t),mot+1);
+}
