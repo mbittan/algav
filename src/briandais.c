@@ -296,6 +296,110 @@ void export_to_latex(briandais_t *tree, char* filename) {
   fclose(f);
 }
 
+
+int export_to_svg_rec(briandais_t *tree, FILE* f, int height, int* offset, int* max_height) {
+  int my_offset = *offset;
+  int bro_offset, gap;
+  int x, y;
+  
+  if(tree != NULL) {
+    fprintf(f, "<text x=\"%d\" y=\"%d\" fill=\"black\" font-size=\"20\"><!-- offset=%d -->",
+	    my_offset*SVG_FACTOR, SVG_BASE+height*SVG_FACTOR, my_offset);
+    if(tree->key != '\0')
+      fprintf(f, "%c</text>\n", tree->key);
+    else
+      fprintf(f, "$</text>\n");
+    if(export_to_svg_rec(tree->son, f, height+1, offset, max_height) != -1) {
+      x = my_offset*SVG_FACTOR+6;
+      y = SVG_BASE+5+height*SVG_FACTOR;
+      fprintf(f, "<path d=\"M%d,%d l0,18 l-2,0 l2,5 l2,-5 l-2,0\" style=\"stroke:black\"/>\n", x, y);
+    }
+    if(tree->brother != NULL)
+      (*offset)++;
+    if((bro_offset = export_to_svg_rec(tree->brother, f, height, offset, max_height)) != -1) {
+      x = my_offset*SVG_FACTOR+15;
+      y = SVG_BASE-7+height*SVG_FACTOR;
+      gap = bro_offset - my_offset;
+      fprintf(f, "<path d=\"M%d,%d l%d,0 l0,-2 l5,2 l-5,2 l0,-2\" style=\"stroke:black\"/>\n", x, y, gap*22+23*(gap-1));
+    }
+    if(height > *max_height)
+      *max_height = height;
+    return my_offset;
+  }
+  return -1;
+}
+
+int get_nb_digits(int n) {
+  int d=1;
+  while(n>9) {
+    n = n/10;
+    d++;
+  }
+  return d;
+}
+
+void export_to_svg(briandais_t *tree, char* filename) {
+  FILE *f;
+  int i;
+  int width=0, height=0, nb_digits;
+  int sizes_pos, rect_size_pos;
+
+  if((f = fopen(filename,"w")) == NULL){
+    perror("fopen");
+    exit(EXIT_FAILURE);
+  }
+
+  /* Header of svg file */
+  fprintf(f,"<?xml version=\"1.0\" standalone=\"no\"?>\n\
+<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\
+ \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n\
+<svg viewBox = \"0 0 ");
+  sizes_pos = (int)ftell(f);
+  fprintf(f, "0123456789 0123456789\" version = \"1.1\"\n\
+xmlns=\"http://www.w3.org/2000/svg\"\
+ xmlns:xlink= \"http://www.w3.org/1999/xlink\">\n\n\
+<rect ");
+  rect_size_pos = (int)ftell(f);
+  fprintf(f, "width=\"0123456789\" height=\"0123456789\" fill=\"white\"/>\n");
+
+  /* Body */
+  export_to_svg_rec(tree, f, 0, &width, &height);
+
+  printf("****** width = %d ******\n", width);
+  printf("****** height = %d ******\n", height);
+
+  /* End of file */
+  fprintf(f,"\n</svg>\n");
+
+  /* Modifying size of viewBox in svg */
+  if(fseek(f, sizes_pos, SEEK_SET) == -1) {
+    perror("fseek");
+    exit(1);
+  }
+  width = 45*width+100;
+  nb_digits = get_nb_digits(width);
+  for(i=10; i>nb_digits; i--)
+    fprintf(f, " ");
+  fprintf(f, "%d ", width);
+  height = 47*height;
+  nb_digits = get_nb_digits(height);
+  for(i=10; i>nb_digits; i--)
+    fprintf(f, " ");
+  fprintf(f, "%d", height);
+
+  /* Modifying size of background rect in svg */
+  if(fseek(f, rect_size_pos, SEEK_SET) == -1) {
+    perror("fseek");
+    exit(1);
+  }
+  nb_digits = get_nb_digits(width) + get_nb_digits(height);
+  fprintf(f, "width=\"%d\" height=\"%d\" fill=\"white\"/>", width, height);
+  for(i=20-nb_digits; i>0; i--)
+    fprintf(f, " ");
+
+  fclose(f);
+}
+
 int main() {
   briandais_t *tree=NULL;
   briandais_t *tree2=NULL;
@@ -342,8 +446,11 @@ int main() {
     tree_hamlet = insert_briandais(tree_hamlet, mot);
   }
   printf("\nExporting Hamlet tree...\n");
-  export_to_latex(tree_hamlet, "hamlet.tex");
-  print_briandais(tree_hamlet);
+  export_to_svg(tree_hamlet, "hamlet.svg");
+  //print_briandais(tree_hamlet);
+  printf("\nExporting test tree to svg...\n");
+  export_to_svg(tree, "test_tree.svg");
+  //print_briandais(tree_hamlet);
   
   destroy_briandais(&tree);
   destroy_briandais(&tree2);

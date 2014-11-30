@@ -7,6 +7,9 @@
 
 #include "gestion_fichier.h"
 
+#define SVG_FACTOR 45
+#define SVG_BASE 15
+
 typedef struct _briandais_ {
   char key;
   struct _briandais_ *son;
@@ -61,6 +64,11 @@ int prefix_briandais(briandais_t *tree, char *word);
 briandais_t* merge_briandais(briandais_t *A, briandais_t *B);
 
 /* Export to LaTeX */
+/* Doesn't work for big trees. */
 void export_to_latex(briandais_t *tree, char* filename);
+
+/* Export to SVG. */
+/* Works for all sizes of trees. */
+void export_to_svg(briandais_t *tree, char* filename);
 
 #endif
