@@ -19,4 +19,7 @@ int comptage_mots(TrieHybride * t);
 */
 void listeMots(TrieHybride * t);
 
+/*Compte le nombre de pointeur vers NULL
+ */
+int comptageNil(TrieHybride *t);
 #endif

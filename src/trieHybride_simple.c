@@ -49,7 +49,19 @@ int listeMotsRec(TrieHybride * t, char * buff, int n){
   listeMotsRec(t->superieur,buff,n);
   return 0;
 }
+
 void listeMots(TrieHybride * t){
   char buff[100];
   listeMotsRec(t,buff,0);
 }
+
+int comptageNil(TrieHybride * t){
+  if(t==NULL){
+    return 1;
+  }
+  int n1,n2,n3;
+  n1=comptageNil(t->inferieur);
+  n2=comptageNil(t->egal);
+  n3=comptageNil(t->superieur);
+  return n1+n2+n3;
+} 
