@@ -119,19 +119,37 @@ void generer_fichier_xml(char * nom_fichier, TrieHybride * t){
   fclose(f);
 }
 
-int remplir_latex(FILE * f, TrieHybride * t, int n){
+int remplir_dot(FILE * f, TrieHybride * t, int n){
   if(t){
     int ninf,neq,nsup;
-    fprintf(f,"%d [label=\"%c\"];",n,t->c);
+    fprintf(f,"%d [label=\"%c\"",n,t->c);
+    if(t->fin){
+      fprintf(f," color=green fill=blue");
+    }
+    fprintf(f,"];");
+
     if(t->inferieur==NULL && t->egal==NULL && t->superieur==NULL){
       return n+1;
     }
-    ninf=remplir_latex(f,t->inferieur,n+1);
-    fprintf(f,"%d->%d\n",n,n+1);
-    neq=remplir_latex(f,t->egal,ninf);
-    fprintf(f,"%d->%d\n",n,ninf);
-    nsup=remplir_latex(f,t->superieur,neq);
-    fprintf(f,"%d->%d\n",n,neq);
+    if(t->inferieur){
+      ninf=remplir_dot(f,t->inferieur,n+1);
+      fprintf(f,"%d->%d [label=\"inf\"];\n",n,n+1);
+    }else{
+      ninf=n+1;
+    }
+
+    if(t->egal){
+      neq=remplir_dot(f,t->egal,ninf);
+      fprintf(f,"%d->%d [label=\"eq\"];\n\n",n,ninf);
+    }else{
+      neq=ninf+1;
+    }
+    if(t->superieur){
+      nsup=remplir_dot(f,t->superieur,neq);
+      fprintf(f,"%d->%d [label=\"sup\"];\n\n",n,neq);
+    }else{
+      nsup=neq;
+    }
     return nsup+1;
   }else{
     fprintf(f,"%d [shape=point];\n",n);
@@ -139,14 +157,14 @@ int remplir_latex(FILE * f, TrieHybride * t, int n){
   }
 }
 
-void generer_fichier_latex(char * nom_fichier, TrieHybride * t){
+void generer_fichier_dot(char * nom_fichier, TrieHybride * t){
   FILE * f;
   if((f=fopen(nom_fichier,"w"))==NULL){
     perror("fopen");
     exit(EXIT_FAILURE);
   }
   fprintf(f,"digraph fichier {\n");
-  remplir_latex(f,t,1);
+  remplir_dot(f,t,1);
   fprintf(f,"}\n");
   fclose(f);
 }

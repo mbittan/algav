@@ -35,7 +35,6 @@ TrieHybride * inferieur(TrieHybride *t);
 */
 TrieHybride * egal(TrieHybride * t);
 
-
 /*
   Renvoie le sous arbre qui représente tout les (sous-)mots commencant par une
   lettre superieur a celle presente a la racine de t
@@ -59,9 +58,9 @@ TrieHybride * creer_mot(char * mot);
 void generer_fichier_xml(char * nom_fichier, TrieHybride * t);
 
 /*
-  Crée le fichier (latex) répresentant le trie hybride passee en parametre
+  Crée le fichier (dot) répresentant le trie hybride passee en parametre
  */
-void generer_fichier_latex(char * nom_fichier, TrieHybride * t);
+void generer_fichier_dot(char * nom_fichier, TrieHybride * t);
 /*
   Affiche le trie hybride sur la sortie standard (moche)
 */
