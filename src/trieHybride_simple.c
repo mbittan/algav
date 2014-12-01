@@ -76,7 +76,7 @@ int max(int a, int b){
 }
 int hauteur(TrieHybride *t){
   if(t==NULL){
-   return 0;
+    return 0;
   }
 
   int n1,n2,n3;
@@ -112,4 +112,80 @@ int prefixe(TrieHybride * t, char * mot){
     return prefixe(superieur(t),mot);
   }
   return prefixe(egal(t),mot+1);
+}
+
+TrieHybride * extraire_minimum(TrieHybride * t, TrieHybride * res){
+  if(t->inferieur==NULL){
+    TrieHybride * aux = t->superieur;
+    res->c=t->c;
+    res->fin=t->fin;
+    res->inferieur=NULL;
+    res->superieur=NULL;
+    res->egal=t->egal;
+    free(t);
+    return aux;
+  }else{
+    t->inferieur=extraire_minimum(t->inferieur,res);
+    return t;
+  }
+}
+
+TrieHybride * supprimer_racine(TrieHybride * t){
+  if(t->inferieur==NULL && t->superieur==NULL){
+    free(t);
+    return NULL;
+  }else if(t->inferieur==NULL){
+    TrieHybride * aux = t->superieur;
+    t->c=aux->c;
+    t->fin=aux->fin;
+    t->inferieur=aux->inferieur;
+    t->egal=aux->egal;
+    t->superieur=aux->superieur;
+    free(aux);
+    return t;
+  }else if(t->superieur==NULL){
+    TrieHybride * aux = t->inferieur;
+    t->c=aux->c;
+    t->fin=aux->fin;
+    t->inferieur=aux->inferieur;
+    t->egal=aux->egal;
+    t->superieur=aux->superieur;
+    free(aux);
+    return t;
+  }else{
+    TrieHybride res;
+    t->superieur=extraire_minimum(t->superieur,&res);
+    t->c=res.c;
+    t->fin=res.fin;
+    t->egal=res.egal;
+    return t;
+  }
+}
+TrieHybride * supprimer(TrieHybride * t, char * mot){
+  if(t==NULL){
+    return NULL;
+  }
+  int n = strlen(mot);
+  if(n==1 && mot[0]==racine(t)){
+    t->fin=0;
+    if(t->egal==NULL){
+      return supprimer_racine(t);
+    }else{
+      return t;
+    }
+  }
+  if(mot[0]<racine(t)){
+    t->inferieur=supprimer(inferieur(t),mot);
+    return t;
+  }else if(mot[0]>racine(t)){
+    t->superieur=supprimer(superieur(t),mot);
+    return t;
+  }else{
+    t->egal=supprimer(egal(t),mot+1);
+    if(t->egal==NULL && t->fin==0){
+      return supprimer_racine(t);
+    }else{
+      return t;
+    }
+  }
 }

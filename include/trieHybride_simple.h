@@ -40,4 +40,9 @@ double profondeur_moyenne(TrieHybride * t);
 */
 int prefixe(TrieHybride * t, char * mot);
 
+/*
+  Supprime le mot passe en parametre s'il est present dans le trie hybride
+*/
+TrieHybride * supprimer(TrieHybride * t, char * mot);
+
 #endif

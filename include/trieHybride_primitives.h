@@ -70,4 +70,5 @@ void print_trie_hybride(TrieHybride * t);
   Fonction permettant d'ajouter un mot au trie passé en parametre
 */
 TrieHybride * ajouter_trie_hybride(char * mot, TrieHybride * t);
+
 #endif
