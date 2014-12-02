@@ -19,6 +19,6 @@ int main(int argc, char ** argv){
   t=ajouter_trie_hybride("toto",t);
   res=comptage_mots(t);
   printf("%d\n",res);
-  generer_fichier_latex("toto.dot",t);
+  // generer_fichier_latex("toto.dot",t);
   return EXIT_SUCCESS;
 }
