@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "gestion_fichier.h"
+#include "structureTrieHybride.h"
 
 /* Constants for building the SVG file */
 #define SVG_FACTOR 45
@@ -67,6 +68,9 @@ int prefix_briandais(briandais_t *tree, char *word);
 
 /* Merge two Briandais trees */
 briandais_t* merge_briandais(briandais_t *A, briandais_t *B);
+
+/* Convert a Briandais tree to a hybrid trie */
+TrieHybride* convert_to_hybrid(briandais_t* tree);
 
 /* Export to LaTeX */
 /* Doesn't work for big trees. */

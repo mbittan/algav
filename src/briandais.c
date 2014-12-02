@@ -236,6 +236,15 @@ briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
   return A;
 }
 
+TrieHybride* convert_to_hybrid(briandais_t* tree) {
+  TrieHybride* th;
+  int fin = 0;
+  if(tree == NULL)
+    return NULL;
+  if(tree->son->key == '\0')
+    fin++;
+}
+
 int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
   static int offset = 0;
   static int node_id = 1;
