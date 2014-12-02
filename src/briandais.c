@@ -202,6 +202,20 @@ int height_briandais(briandais_t *tree) {
   return MAX(son, bro);
 }
 
+double average_depth(briandais_t *tree) {
+  double average = 0;
+  int nb_bros = 0;
+  briandais_t *t = tree;
+
+  while(t!=NULL) {
+    average += height_briandais(t);
+    nb_bros++;
+    t = t->brother;
+  }
+
+  return average/(double)nb_bros;
+}
+
 int prefix_briandais(briandais_t *tree, char *word) {
   int n=0;
   if(tree == NULL)
@@ -350,7 +364,7 @@ void export_to_svg(briandais_t *tree, char* filename) {
   }
 
   /* Header of svg file */
-  fprintf(f,"<?xml version=\"1.0\" standalone=\"no\"?>\n\
+  fprintf(f,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\
 <!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\
  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n\
 <svg viewBox = \"0 0 ");

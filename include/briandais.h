@@ -7,9 +7,11 @@
 
 #include "gestion_fichier.h"
 
+/* Constants for building the SVG file */
 #define SVG_FACTOR 45
 #define SVG_BASE 15
 
+/* Structure for a Briandais tree */
 typedef struct _briandais_ {
   char key;
   struct _briandais_ *son;
@@ -56,6 +58,9 @@ void list_briandais(briandais_t *tree, char **list);
 
 /* Returns the height of the Briandais trie tree */
 int height_briandais(briandais_t *tree);
+
+/* Returns the average depth of a Briandais tree */
+double average_depth(briandais_t *tree);
 
 /* Checks how many words in tree word is the prefix */
 int prefix_briandais(briandais_t *tree, char *word);
