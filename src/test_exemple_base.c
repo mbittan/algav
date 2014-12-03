@@ -14,20 +14,10 @@ int main(int argc, char ** argv){
   memset(buff,'\0',100*sizeof(char));
   while(mot_suivant(fd,buff)){
     t=ajouter_trie_hybride(buff,t);
-  }
- fd=ouvrir_fichier(DATA_DIR"exemple_de_base");
-  if(fd<0){
-    perror("open");
-    exit(1);
-  }
-  memset(buff,'\0',100*sizeof(char));
-  while(mot_suivant(fd,buff)){
-    t=supprimer(t,buff);
-    printf("%s   %d\n",buff,comptage_mots(t));
-    sprintf(buff,"toto%d.dot",i);
-    generer_fichier_dot(buff,t);
-    i++;
-  }
-  printf("\n\n%p\n",t);
+   } 
+  t=ajouter_trie_hybride("toto",t);
+  res=comptage_mots(t);
+  printf("%d\n",res);
+  // generer_fichier_latex("toto.dot",t);
   return EXIT_SUCCESS;
 }

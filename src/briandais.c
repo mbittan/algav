@@ -23,45 +23,35 @@ int is_empty_briandais(briandais_t *tree) {
 
 briandais_t* insert_briandais(briandais_t *tree, char* word) {
   briandais_t *B;
-  //printf("%s : \t", word);
   if(tree == NULL) {
-    //printf("*tree=null && ");
     if(*word == '\0') {
-      //printf("*word=epsilon\n");
       return new_empty_briandais();
     }
-    //printf("*word!=epsilon\n");
     return new_briandais(*word,
 			 insert_briandais(NULL, word+1),
 			 NULL);
   }
   if(*word == '\0') {
     if(tree->key != '\0') {
-      //printf("*word=epsilon && tree->key!=epsilon\n");
       B = new_empty_briandais();
       B->brother = tree;
       return B;
     }
-    //printf("*word=epsilon && tree->key=epsilon\n");
     return tree;
   }
   else if(*word < tree->key) {
-    //printf("*word < tree->key : %c < %c\n", *word, tree->key);
     return new_briandais(*word, insert_briandais(NULL, word+1), tree);
   }
   else if(*word == tree->key) {
-    //printf("*word == tree->key : %c = %c\n", *word, tree->key);
     tree->cpt++;
     tree->son = insert_briandais(tree->son, word+1);
     return tree;
   }
   else {
-    //printf("*word > tree->key : %c > %c\n", *word, tree->key);
     tree->brother = insert_briandais(tree->brother, word);
     return tree;
   }
   if(is_empty_briandais(tree)) {
-    //printf("tree is empty : %p\n", tree);
     tree->brother = new_briandais(*word, insert_briandais(NULL, word+1), NULL);
     return tree;
   }
@@ -72,35 +62,25 @@ int delete_briandais(briandais_t **tree, char* word) {
   int r;
   briandais_t *bros_bro, *sons_bro;
 
-  //printf("%s : ", word);
   if(is_empty_briandais(*tree)) {
-    //printf("tree is empty ");
     if(*word == '\0') {
-      //printf("word is $\n");
       destroy_briandais(tree);
       *tree = NULL;
       return 1;
     }
-    //printf("word is not empty (-1)\n");
     return -1;
   }
   if(*word == '\0') {
-    //printf("tree not empty and word=$ (-1)\n");
     return -1;
   }
 
   if(*word == (*tree)->key) {
-    //printf("*word = tree->key : %c = %c\n", *word, (*tree)->key);
     sons_bro = (*tree)->son->brother;
-    //if(sons_bro != NULL)
-      //printf("sons_bro->key = %c\n", sons_bro->key);
     if((r = delete_briandais(&((*tree)->son), word+1)) != -1) {
       (*tree)->cpt--;
       if(r == 1)
 	(*tree)->son = sons_bro;
-      // printf("deletion ok : %c->cpt = %d\n", (*tree)->key, (*tree)->cpt);
       if((*tree)->cpt == 0) {
-	//printf("destroy from %s\n", word);
 	destroy_briandais(tree);
 	*tree = NULL;
 	return 1;
@@ -109,7 +89,6 @@ int delete_briandais(briandais_t **tree, char* word) {
     }
   }
   else if(*word > (*tree)->key) {
-    //printf("*word > tree->key : %c > %c\n", *word, (*tree)->key);
     if((*tree)->brother != NULL)
       bros_bro = (*tree)->brother->brother;
     r = delete_briandais(&((*tree)->brother), word);
@@ -118,7 +97,6 @@ int delete_briandais(briandais_t **tree, char* word) {
     return r;
   }
   else {
-    //printf("*word < tree->key : %c < %c\n", *word, (*tree)->key);
     return -1;
   }
   return -1;
@@ -202,6 +180,22 @@ int height_briandais(briandais_t *tree) {
   return MAX(son, bro);
 }
 
+double average_depth(briandais_t *tree) {
+  double average = 0;
+  int nb_bros = 0;
+  briandais_t *t = tree;
+  int h;
+
+  while(t!=NULL) {
+    h = height_briandais(t->son);
+    average += h+1;
+    nb_bros++;
+    t = t->brother;
+  }
+
+  return average/(double)nb_bros;
+}
+
 int prefix_briandais(briandais_t *tree, char *word) {
   int n=0;
   if(tree == NULL)
@@ -240,6 +234,15 @@ briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
   }
 
   return A;
+}
+
+TrieHybride* convert_to_hybrid(briandais_t* tree) {
+  TrieHybride* th;
+  int fin = 0;
+  if(tree == NULL)
+    return NULL;
+  if(tree->son->key == '\0')
+    fin++;
 }
 
 int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
@@ -350,7 +353,7 @@ void export_to_svg(briandais_t *tree, char* filename) {
   }
 
   /* Header of svg file */
-  fprintf(f,"<?xml version=\"1.0\" standalone=\"no\"?>\n\
+  fprintf(f,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\
 <!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\
  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n\
 <svg viewBox = \"0 0 ");
@@ -435,6 +438,8 @@ int main() {
 
   printf("\nTesting height of tree (should be 15) :\n");
   printf("Height : %d\n", height_briandais(tree));
+  printf("\nTesting average depth of tree (should be 7.8) :\n");
+  printf("Average depth : %f\n", average_depth(tree));
 
   printf("\nTesting prefix in Briandais :\n");
   printf("dactylo (should be 2) : %d\n", prefix_briandais(tree, "dactylo"));
@@ -447,10 +452,8 @@ int main() {
   }
   printf("\nExporting Hamlet tree...\n");
   export_to_svg(tree_hamlet, "hamlet.svg");
-  //print_briandais(tree_hamlet);
   printf("\nExporting test tree to svg...\n");
   export_to_svg(tree, "test_tree.svg");
-  //print_briandais(tree_hamlet);
   
   destroy_briandais(&tree);
   destroy_briandais(&tree2);
