@@ -5,4 +5,5 @@ INC = include
 OBJ = obj
 BIN = bin
 RAPPORT = rapport
-
+SRCTEST = $(SRC)/tests
+BINTEST = $(BIN)/tests
