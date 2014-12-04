@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "gestion_fichier.h"
-#include "structureTrieHybride.h"
+#include "trieHybride_simple.h"
 
 /* Constants for building the SVG file */
 #define SVG_FACTOR 45

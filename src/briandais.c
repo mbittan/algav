@@ -237,12 +237,19 @@ briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
 }
 
 TrieHybride* convert_to_hybrid(briandais_t* tree) {
-  TrieHybride* th;
-  int fin = 0;
+  TrieHybride *th_son=NULL, *th_bro=NULL;
+  int end = 0;
   if(tree == NULL)
     return NULL;
-  if(tree->son->key == '\0')
-    fin++;
+  if(tree->son != NULL) {
+    if(tree->son->key == '\0')
+      end++;
+    else
+      th_son = convert_to_hybrid(tree->son);
+  }
+  if(tree->brother != NULL)
+    th_bro = convert_to_hybrid(tree->brother);
+  return trie_hybride(tree->key, end, NULL, th_son, th_bro);
 }
 
 int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
@@ -407,6 +414,7 @@ int main() {
   briandais_t *tree=NULL;
   briandais_t *tree2=NULL;
   briandais_t *tree_hamlet=NULL;
+  TrieHybride *th;
 
   int fd = ouvrir_fichier(DATA_DIR"exemple_de_base");
   int fdh = ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
@@ -454,6 +462,15 @@ int main() {
   export_to_svg(tree_hamlet, "hamlet.svg");
   printf("\nExporting test tree to svg...\n");
   export_to_svg(tree, "test_tree.svg");
+
+  printf("\nTesting conversion to \"trie hybride\" :\n");
+  th = convert_to_hybrid(tree);
+  generer_fichier_dot("test_to_trie.dot", th);
+  th = convert_to_hybrid(tree_hamlet);
+  printf("\nTesting height of tree (should be 15) :\n");
+  printf("Height : %d\n", hauteur(th));
+  printf("\nTesting average depth of tree (should be 7.8) :\n");
+  printf("Average depth : %f\n", profondeur_moyenne(th));
   
   destroy_briandais(&tree);
   destroy_briandais(&tree2);
