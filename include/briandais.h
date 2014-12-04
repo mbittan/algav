@@ -7,6 +7,7 @@
 
 #include "gestion_fichier.h"
 #include "trieHybride_simple.h"
+#include "liste.h"
 
 /* Constants for building the SVG file */
 #define SVG_FACTOR 45
@@ -55,7 +56,7 @@ int count_briandais(briandais_t *tree);
 int count_null_briandais(briandais_t *tree);
 
 /* List words in Briandais tree */
-void list_briandais(briandais_t *tree, char **list);
+Liste* list_briandais(briandais_t *tree);
 
 /* Returns the height of the Briandais trie tree */
 int height_briandais(briandais_t *tree);
