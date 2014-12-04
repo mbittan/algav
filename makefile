@@ -1,19 +1,26 @@
 include makefile.inc
 
-all : directories test_exemple_base briandais
+all : directories test_exemple_base briandais liste_tests
 
-directories: $(OBJ) $(BIN) 
+directories: $(OBJ) $(BIN) $(BINTEST)
+
+$(BINTEST) : 
+	mkdir -p $@
 
 $(OBJ):
-	mkdir -p $(OBJ)
+	mkdir -p $@
 
 $(BIN):
-	mkdir -p $(BIN)
+	mkdir -p $@
 
+liste_tests : $(BINTEST)/liste_tests
 
 test_exemple_base : $(BIN)/test_exemple_base
 
 briandais: $(BIN)/briandais
+
+$(BINTEST)/liste_tests : $(OBJ)/liste.o $(OBJ)/liste_tests.o
+	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
 
 $(BIN)/test_exemple_base : $(OBJ)/test_exemple_base.o $(OBJ)/trieHybride_primitives.o $(OBJ)/trieHybride_simple.o $(OBJ)/gestion_fichier.o
 	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
@@ -22,6 +29,12 @@ $(BIN)/briandais:  $(OBJ)/briandais.o $(OBJ)/gestion_fichier.o
 	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
 
 $(OBJ)/test_exemple_base.o : $(SRC)/test_exemple_base.c
+	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
+
+$(OBJ)/liste.o : $(SRC)/liste.c
+	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
+
+$(OBJ)/liste_tests.o : $(SRCTEST)/liste_tests.c
 	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
 
 $(OBJ)/gestion_fichier.o : $(SRC)/gestion_fichier.c $(INC)/gestion_fichier.h
