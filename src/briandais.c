@@ -139,10 +139,12 @@ void print_briandais(briandais_t *tree) {
 }
 
 int search_briandais(briandais_t *tree, char *word) {
+  if(tree == NULL)
+    return 0;
   if(tree->key == '\0') {
     if(*word == '\0')
       return 1;
-    return 0;
+    return search_briandais(tree->brother, word);
   }
   if(*word == '\0')
     return 0;
@@ -167,8 +169,30 @@ int count_null_briandais(briandais_t *tree) {
   return count_null_briandais(tree->son) + count_null_briandais(tree->brother);
 }
 
-void list_briandais(briandais_t *tree, char **list) {
-  
+void list_briandais_rec(briandais_t *tree, char *buffer, int size, Liste *list) {
+  char *word;
+  if(tree != NULL) {
+    *buffer = tree->key;
+    if(*buffer == '\0') {
+      word = malloc((size+1)*sizeof(char));
+      word = memcpy(word, buffer-size, size+1);
+      inserer_fin(list, (void*)word);
+    }
+    else {
+      list_briandais_rec(tree->son, buffer+1, size+1, list);
+    }
+    list_briandais_rec(tree->brother, buffer, size, list);
+  }
+}
+
+Liste* list_briandais(briandais_t *tree) {
+  Liste *list;
+  char buffer[100];
+
+  list = creer_liste();
+  list_briandais_rec(tree, buffer, 0, list);
+
+  return list;
 }
 
 int height_briandais(briandais_t *tree) {
@@ -220,16 +244,14 @@ briandais_t* merge_briandais(briandais_t *A, briandais_t *B) {
     return B;
 
   if(A->key > B->key) {
-    B->brother = A;
+    B->brother = merge_briandais(A, B->brother);
     return B;
   }
-
-  if(A->key == B->key) {
+  else if(A->key == B->key) {
     A->brother = merge_briandais(A->brother, B->brother);
     A->son = merge_briandais(A->son, B->son);
   }
-
-  if(A->key < B->key) {
+  else {//if(A->key < B->key) {
     A->brother = merge_briandais(A->brother, B);
   }
 
@@ -256,7 +278,7 @@ int export_to_latex_rec(briandais_t *tree, FILE* f, int height) {
   static int offset = 0;
   static int node_id = 1;
   int id, relative_id;
-
+  
   if(tree != NULL) {
     id = node_id;
     fprintf(f, "\\node at (%d,-%d) (%d) ",\
@@ -413,12 +435,19 @@ xmlns=\"http://www.w3.org/2000/svg\"\
 int main() {
   briandais_t *tree=NULL;
   briandais_t *tree2=NULL;
+  briandais_t *tree3=NULL;
   briandais_t *tree_hamlet=NULL;
+  briandais_t *tree_allswell=NULL;
+  briandais_t *tree_hamlet_allswell=NULL;
   TrieHybride *th;
+  Liste *l1 = creer_liste(), *l2 = creer_liste();
+  Element *e;
 
   int fd = ouvrir_fichier(DATA_DIR"exemple_de_base");
   int fdh = ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
+  int fda = ouvrir_fichier(SHAKESPEARE_DIR"allswell.txt");
   char mot[50];
+  int i, merge_ok=0;
   
   while(mot_suivant(fd, mot) != 0) {
     tree = insert_briandais(tree, mot);
@@ -471,10 +500,56 @@ int main() {
   printf("Height : %d\n", hauteur(th));
   printf("\nTesting average depth of tree (should be 7.8) :\n");
   printf("Average depth : %f\n", profondeur_moyenne(th));
-  
+
+  printf("\nCreating All's Well tree...\n");
+  while(mot_suivant(fda, mot) != 0) {
+    tree_allswell = insert_briandais(tree_allswell, mot);
+  }
+
+  printf("\nListing Hamlet...\n");
+  l1 = list_briandais(tree_hamlet);
+  printf("Listing All's Well...\n");
+  l2 = list_briandais(tree_allswell);
+
+  printf("Merging Hamlet and All's Well trees...\n");
+  tree_hamlet_allswell = merge_briandais(tree_hamlet, tree_allswell);
+  e = l1->debut;
+  for(i=0; i<l1->taille; i++) {
+    if(search_briandais(tree_hamlet_allswell, (char*)e->data))
+      merge_ok++;
+    else
+      printf("%s not found...\n", (char*)e->data);
+    e = e->suiv;
+  }
+  e = l2->debut;
+  for(i=0; i<l2->taille; i++) {
+    if(search_briandais(tree_hamlet_allswell, (char*)e->data))
+      merge_ok++;
+    else
+      printf("%s not found...\n", (char*)e->data);
+    e = e->suiv;
+  }
+  if(merge_ok == (l1->taille+l2->taille))
+    printf("Merging went OK !\n");
+  else
+    printf("Something went wrong... Only %d/%d words match.\n", merge_ok, l1->taille+l2->taille);
+
+  export_to_svg(tree_hamlet_allswell, "hamlet_allswell.svg");
+  tree3 = insert_briandais(tree3, "wrapp");
+  tree_hamlet_allswell = merge_briandais(tree_hamlet_allswell, tree3);
+  if(search_briandais(tree_hamlet_allswell, "wrapp"))
+    printf("wrapp inserted\n");
+  else
+    printf("wrapp not inserted\n");
+
+  printf("\nExporting All's Well-Hamlet tree...\n");
+  export_to_svg(tree_hamlet_allswell, "hamlet_allswell2.svg");
+
   destroy_briandais(&tree);
   destroy_briandais(&tree2);
   destroy_briandais(&tree_hamlet);
+  destroy_briandais(&tree_allswell);
+  destroy_briandais(&tree_hamlet_allswell);
 
   return EXIT_SUCCESS;
 }
