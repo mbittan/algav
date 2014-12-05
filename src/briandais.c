@@ -60,30 +60,26 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
 
 int delete_briandais(briandais_t **tree, char* word) {
   int r;
-  briandais_t *bros_bro, *sons_bro;
+  briandais_t *bros_bro, *sons_bro, *son, *bro;
 
-  if(is_empty_briandais(*tree)) {
-    if(*word == '\0') {
-      destroy_briandais(tree);
-      *tree = NULL;
-      return 1;
-    }
+  if(*tree == NULL)
     return -1;
-  }
-  if(*word == '\0') {
-    return -1;
+  
+  if((*tree)->key == '\0' && *word == '\0') {
+      return 1;   // tell father to take my brother as a son and destroy me
   }
 
   if(*word == (*tree)->key) {
     sons_bro = (*tree)->son->brother;
     if((r = delete_briandais(&((*tree)->son), word+1)) != -1) {
       (*tree)->cpt--;
-      if(r == 1)
+      if(r == 1) {
+	son = (*tree)->son;
 	(*tree)->son = sons_bro;
-      if((*tree)->cpt == 0) {
-	destroy_briandais(tree);
-	*tree = NULL;
-	return 1;
+	free(son);
+	if((*tree)->cpt == 0) {
+	  return 1;  // tell father/bro to destroy me (and take my bro as son)
+	}
       }
       return 0;
     }
@@ -91,10 +87,14 @@ int delete_briandais(briandais_t **tree, char* word) {
   else if(*word > (*tree)->key) {
     if((*tree)->brother != NULL)
       bros_bro = (*tree)->brother->brother;
-    r = delete_briandais(&((*tree)->brother), word);
-    if(r == 1)
-      (*tree)->brother = bros_bro;
-    return r;
+    if((r = delete_briandais(&((*tree)->brother), word)) != -1) {
+      if(r == 1) {
+	bro = (*tree)->brother;
+	(*tree)->brother = bros_bro;
+	free(bro);
+      }
+      return 0;
+    }
   }
   else {
     return -1;
@@ -106,9 +106,11 @@ int destroy_briandais(briandais_t **tree) {
   if(*tree != NULL) {
     if((*tree)->son != NULL)
       destroy_briandais(&((*tree)->son));
+    if((*tree)->brother != NULL)
+      destroy_briandais(&((*tree)->brother));
     free(*tree);
+    *tree = NULL;
   }
-  *tree = NULL;
   return 0;
 }
 
@@ -397,9 +399,6 @@ xmlns=\"http://www.w3.org/2000/svg\"\
   /* Body */
   export_to_svg_rec(tree, f, 0, &width, &height);
 
-  printf("****** width = %d ******\n", width);
-  printf("****** height = %d ******\n", height);
-
   /* End of file */
   fprintf(f,"\n</svg>\n");
 
@@ -534,16 +533,17 @@ int main() {
   else
     printf("Something went wrong... Only %d/%d words match.\n", merge_ok, l1->taille+l2->taille);
 
+  printf("\nExporting All's Well-Hamlet tree to SVG...\n");
   export_to_svg(tree_hamlet_allswell, "hamlet_allswell.svg");
-  tree3 = insert_briandais(tree3, "wrapp");
-  tree_hamlet_allswell = merge_briandais(tree_hamlet_allswell, tree3);
-  if(search_briandais(tree_hamlet_allswell, "wrapp"))
-    printf("wrapp inserted\n");
-  else
-    printf("wrapp not inserted\n");
 
-  printf("\nExporting All's Well-Hamlet tree...\n");
-  export_to_svg(tree_hamlet_allswell, "hamlet_allswell2.svg");
+  printf("\nTesting deletion of each word of Hamlet...\n");
+  e = l1->debut;
+  for(i=0; i<l1->taille; i++) {
+    delete_briandais(&tree_hamlet_allswell, (char*)e->data);
+    if(search_briandais(tree_hamlet_allswell, (char*)e->data))
+      printf("There was a problem : %s wasn't deleted...\n", (char*)e->data);
+    e = e->suiv;
+  }
 
   destroy_briandais(&tree);
   destroy_briandais(&tree2);
