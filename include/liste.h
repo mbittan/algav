@@ -40,4 +40,26 @@ void inserer_fin(Liste * l, void * data);
   Supprime le premier element de la liste
 */
 void * supprimer_debut(Liste * l);
+
+/*
+  Supprime le dernier element de la liste
+*/
+void * supprimer_fin(Liste * l);
+
+/*
+  Applique la fonction passee en parametre a tout les elements de la liste
+*/
+void map(Liste * l, void (*f)(void *));
+
+/*
+  Libere la memoire associee a la liste
+*/
+void destroy_liste(Liste * l);
+
+/*
+  Cherche si l'element est present dans la liste.
+  le pointeur eq doit pointer sur une fonction qui renvoie 1 si les deux
+  elements sont egaux, 0 sinon.
+*/
+int estpresent(Liste * l, void * data, int (*eq)(void *,void*));
 #endif

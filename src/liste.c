@@ -83,3 +83,58 @@ void * supprimer_debut(Liste * l){
   l->taille--;
   return data;
 }
+
+void * supprimer_fin(Liste * l){
+  void * data;
+  Element * aux;
+  if(l->taille==0){
+    return NULL;
+  }
+
+  if(l->taille==1){
+    data=l->debut->data;
+    free(l->debut);
+    l->debut=NULL;
+    l->fin=NULL;
+  }else{
+    data=l->fin->data;
+    l->fin->prec->suiv=l->debut;
+    l->debut->prec=l->fin->prec;
+    aux=l->fin;
+    l->fin=l->fin->prec;
+    free(aux);
+  }
+  l->taille--;
+  return data;
+}
+
+void map(Liste * l,void (*f)(void *)){
+  Element * e=l->debut;
+  int i;
+  for(i=0;i<l->taille;i++,e=e->suiv){
+    f(e->data);
+  }
+}
+
+void destroy_liste(Liste * l){
+  Element * e=l->debut;
+  Element * aux;
+  int i;
+  for(i=0;i<l->taille;i++){
+    aux=e;
+    e=e->suiv;
+    free(aux);
+  }
+  free(l);
+}
+
+int estpresent(Liste * l, void * data, int (*eq)(void *,void*)){
+  Element * e=l->debut;
+  int i;
+  for(i=0;i<l->taille;i++,e=e->suiv){
+    if(eq(data,e->data)){
+      return 1;
+    }
+  }
+  return 0;
+}
