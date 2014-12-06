@@ -51,10 +51,10 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
     tree->brother = insert_briandais(tree->brother, word);
     return tree;
   }
-  if(is_empty_briandais(tree)) {
-    tree->brother = new_briandais(*word, insert_briandais(NULL, word+1), NULL);
-    return tree;
-  }
+  /* if(is_empty_briandais(tree)) { */
+  /*   tree->brother = new_briandais(*word, insert_briandais(NULL, word+1), NULL); */
+  /*   return tree; */
+  /* } */
   return tree;
 }
 
