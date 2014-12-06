@@ -1,5 +1,8 @@
 #include "benchmark.h"
 
+Liste *l;
+briandais_t *tree;
+
 long bench(void (*f)()) {
   struct timeval tv;
   long start, end;
@@ -22,20 +25,26 @@ long bench(void (*f)()) {
 }
 
 void bench_insert_briandais() {
-  Liste *l = fichiers_reguliers(SHAKESPEARE_DIR);
   Element *e = l->debut;
-  briandais_t *tree = NULL;
   int i;
   
+  tree = NULL;
+
   for(i=0; i<l->taille; i++) {
     tree = lire_fichier_briandais((char*)e->data, tree);
     e = e->suiv;
   }
-
-  export_to_svg(tree, "shakespeare.svg");
 }
 
 int main() {
-  bench_insert_briandais();
+  l = fichiers_reguliers(SHAKESPEARE_DIR);
+
+  printf("Benchmarking insertion in de la Briandais tries :\n\
+Inserting all Shakespeare plays...\n");
+  printf("Insertion done in %ld microseconds.\n",
+	 bench(bench_insert_briandais));
+
+  destroy_briandais(&tree);
+  
   return 0;
 }
