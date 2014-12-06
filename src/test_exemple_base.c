@@ -1,5 +1,5 @@
-#include "trieHybride_complexe.h"
 #include "gestion_fichier.h"
+#include "trieHybride_complexe.h"
 #include "liste.h"
 #include "briandais.h"
 
@@ -8,28 +8,22 @@ void print(void * d){
 }
 int main(int argc, char ** argv){
   TrieHybride * t = NULL;
-  double res;
-  char buff[100];
-  int fd=ouvrir_fichier(SHAKESPEARE_DIR"hamlet.txt");
-  if(fd<0){
-    perror("open");
-    exit(1);
+  Liste * l = fichiers_reguliers(SHAKESPEARE_DIR);
+  printf("%d\n",l->taille);
+  char * fic;
+  map(l,print);
+  while((fic=(char *)supprimer_fin(l))){
+    t=lire_fichier_th(fic,t);
   }
-  memset(buff,'\0',100*sizeof(char));
-  while(mot_suivant(fd,buff)){
-    t=ajouter_trie_hybride(buff,t);
-  }
- 
-  printf("%d %f %d\n", hauteur(t),profondeur_moyenne(t),comptage_mots(t));
-  generer_fichier_dot("t1.dot",t);
-  Liste * l = liste_mots(t);
+
+  printf("%d %f, %d %d\n", hauteur(t),profondeur_moyenne(t),hauteur(t->superieur), hauteur(t->inferieur));
   t=equilibrer(t);
-  printf("%d %f %d\n", hauteur(t),profondeur_moyenne(t),comptage_mots(t));
-  generer_fichier_dot("t2.dot",t);
-  Liste * l2=liste_mots(t);
-  printf("%d,%d\n",l->taille,l2->taille);
+  printf("%d %f, %d %d\n", hauteur(t),profondeur_moyenne(t),hauteur(t->superieur), hauteur(t->inferieur));
   /* map(l,print); */
-  /* printf("------------------------------------------------------------------------\n"); */
+  /* printf("------------------------------------------------------------------------\n); */
   /* map(l2,print); */
+  free_trie_hybride(t);
+  map(l,free);
+  destroy_liste(l);
   return EXIT_SUCCESS;
 }
