@@ -20,3 +20,22 @@ long bench(void (*f)()) {
   // return function f's execution duration
   return end - start;
 }
+
+void bench_insert_briandais() {
+  Liste *l = fichiers_reguliers(SHAKESPEARE_DIR);
+  Element *e = l->debut;
+  briandais_t *tree = NULL;
+  int i;
+  
+  for(i=0; i<l->taille; i++) {
+    tree = lire_fichier_briandais((char*)e->data, tree);
+    e = e->suiv;
+  }
+
+  export_to_svg(tree, "shakespeare.svg");
+}
+
+int main() {
+  bench_insert_briandais();
+  return 0;
+}
