@@ -2,6 +2,7 @@
 #define _TH_SIMPLE_H_
 
 #include "trieHybride_primitives.h"
+#include "liste.h"
 
 /*
   Fonction permettant de chercher si un mot est present dans le trie hybride
@@ -17,7 +18,12 @@ int comptage_mots(TrieHybride * t);
 /*
   Affiche la liste des mots dans l'ordre alphabetique
 */
-void liste_mots(TrieHybride * t);
+void afficher_liste_mots(TrieHybride * t);
+
+/*
+  Renvoie la liste des mots present dans le trie hybride
+*/
+Liste * liste_mots(TrieHybride * t);
 
 /*
   Compte le nombre de pointeur vers NULL
