@@ -138,3 +138,57 @@ int estpresent(Liste * l, void * data, int (*eq)(void *,void*)){
   }
   return 0;
 }
+
+Liste * fusion(Liste *l1,Liste *l2){
+  Liste * res =creer_liste();
+  Element *e = l1->debut;
+  int i; 
+  for(i=0;i<l1->taille;i++,e=e->suiv){
+    inserer_fin(res,e->data);
+  } 
+
+  e=l2->debut;
+  for(i=0;i<l2->taille;i++,e=e->suiv){
+    inserer_fin(res,e->data);
+  }
+  
+  return res;
+}
+
+Liste * fusion_triee(Liste *l1, Liste *l2, int (*cmp)(void *, void *)){
+  Liste * res =creer_liste();
+  Element * e1=l1->debut;
+  Element * e2=l2->debut;
+  int ret;
+  int i=0,j=0;
+  while(i<l1->taille && j<l2->taille){
+    ret=cmp(e1->data,e2->data);
+    if(ret==0){
+      inserer_fin(res,e1->data);
+      e1=e1->suiv;
+      e2=e2->suiv;
+      i++;
+      j++;
+    }else if(ret<0){
+      inserer_fin(res,e1->data);
+      e1=e1->suiv;
+      i++;
+    }else{
+      inserer_fin(res,e2->data);
+      e2=e2->suiv;
+      j++;
+    }
+  }
+
+  if(i==l1->taille){
+    for(;j<l2->taille;j++,e2=e2->suiv){
+      inserer_fin(res,e2->data);
+    }
+  }else{
+    for(;i<l1->taille;i++,e1=e1->suiv){
+      inserer_fin(res,e1->data);
+    }
+  }
+
+  return res;
+}

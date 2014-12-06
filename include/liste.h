@@ -62,4 +62,19 @@ void destroy_liste(Liste * l);
   elements sont egaux, 0 sinon.
 */
 int estpresent(Liste * l, void * data, int (*eq)(void *,void*));
+
+/*
+  Fusionne deux listes. 
+*/
+Liste * fusion(Liste *l1,Liste *l2);
+
+/*
+  Rend la liste triee issue de la fusion de deux listes triees.
+  Si un element est present dans les deux listes, il ne sera pas present en
+  en double dans la fusion.
+  La fonction passee en parametre doit renvoyer 0 si les elements sont egaux,
+  un nombre negatif si le premier element est inferieur au premier, un nombre 
+  positif sinon.
+*/
+Liste * fusion_triee(Liste *l1, Liste *l2, int (*cmp)(void *, void *));
 #endif

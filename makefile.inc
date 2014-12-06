@@ -4,6 +4,7 @@ SRC = src
 INC = include
 OBJ = obj
 BIN = bin
+LIB = lib
 RAPPORT = rapport
 SRCTEST = $(SRC)/tests
 BINTEST = $(BIN)/tests

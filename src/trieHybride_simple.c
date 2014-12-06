@@ -34,25 +34,45 @@ int comptage_mots(TrieHybride * t){
   }
 }
 
-int liste_mots_rec(TrieHybride * t, char * buff, int n){
+void afficher_liste_mots_rec(TrieHybride * t, char * buff, int n){
   if(t==NULL){
-    return 0;
+    return;
   }
-  liste_mots_rec(t->inferieur,buff,n);
+  afficher_liste_mots_rec(t->inferieur,buff,n);
   buff[n]=t->c;
   buff[n+1]='\0';
   if(t->fin){
     printf("%s\n",buff);
   }
-  liste_mots_rec(t->egal,buff,n+1);
+  afficher_liste_mots_rec(t->egal,buff,n+1);
   buff[n]='\0';
-  liste_mots_rec(t->superieur,buff,n);
-  return 0;
+  afficher_liste_mots_rec(t->superieur,buff,n);
 }
 
-void liste_mots(TrieHybride * t){
+void afficher_liste_mots(TrieHybride * t){
   char buff[100];
-  liste_mots_rec(t,buff,0);
+  afficher_liste_mots_rec(t,buff,0);
+}
+
+void liste_mots_rec(TrieHybride * t, char * buff, int n, Liste * l){
+  if(t==NULL){
+    return;
+  }
+  liste_mots_rec(t->inferieur,buff,n,l);
+  buff[n]=t->c;
+  buff[n+1]='\0';
+  if(t->fin){
+    inserer_fin(l,strdup(buff));
+  }
+  liste_mots_rec(t->egal,buff,n+1,l);
+  buff[n]='\0';
+  liste_mots_rec(t->superieur,buff,n,l);
+}
+Liste * liste_mots(TrieHybride *t){
+  Liste * l = creer_liste();
+  char buff[100];
+  liste_mots_rec(t,buff,0,l);
+  return l;
 }
 
 int comptage_nil(TrieHybride * t){
@@ -161,6 +181,7 @@ TrieHybride * supprimer_racine(TrieHybride * t){
     return t;
   }
 }
+
 TrieHybride * supprimer(TrieHybride * t, char * mot){
   if(t==NULL){
     return NULL;
