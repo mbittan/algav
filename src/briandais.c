@@ -369,7 +369,7 @@ int export_to_svg_rec(briandais_t *tree, FILE* f, int height, int* offset, int* 
     fprintf(f, "<text x=\"%d\" y=\"%d\" fill=\"black\" font-size=\"20\"><!-- offset=%d -->",
 	    my_offset*SVG_FACTOR, SVG_BASE+height*SVG_FACTOR, my_offset);
     if(tree->key != '\0')
-      fprintf(f, "%c %d</text>\n", tree->key, tree->cpt);
+      fprintf(f, "%c</text>\n", tree->key);
     else
       fprintf(f, "$</text>\n");
     if(export_to_svg_rec(tree->son, f, height+1, offset, max_height) != -1) {
