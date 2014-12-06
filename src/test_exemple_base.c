@@ -1,5 +1,5 @@
-#include "trieHybride_simple.h"
 #include "gestion_fichier.h"
+#include "trieHybride_complexe.h"
 #include "liste.h"
 #include "briandais.h"
 
@@ -8,21 +8,22 @@ void print(void * d){
 }
 int main(int argc, char ** argv){
   TrieHybride * t = NULL;
-  double res;
-  char buff[100];
-  int fd=ouvrir_fichier(DATA_DIR"exemple_de_base");
-  if(fd<0){
-    perror("open");
-    exit(1);
-  }
-  memset(buff,'\0',100*sizeof(char));
-  while(mot_suivant(fd,buff)){
-    t=ajouter_trie_hybride(buff,t);
-   } 
-  briandais_t * b=conversion(t);
-  Liste * l = list_briandais(b);
+  Liste * l = fichiers_reguliers(SHAKESPEARE_DIR);
+  printf("%d\n",l->taille);
+  char * fic;
   map(l,print);
-  destroy_liste(l);
+  while((fic=(char *)supprimer_fin(l))){
+    t=lire_fichier_th(fic,t);
+  }
+
+  printf("%d %f, %d %d\n", hauteur(t),profondeur_moyenne(t),hauteur(t->superieur), hauteur(t->inferieur));
+  t=equilibrer(t);
+  printf("%d %f, %d %d\n", hauteur(t),profondeur_moyenne(t),hauteur(t->superieur), hauteur(t->inferieur));
+  /* map(l,print); */
+  /* printf("------------------------------------------------------------------------\n); */
+  /* map(l2,print); */
   free_trie_hybride(t);
+  map(l,free);
+  destroy_liste(l);
   return EXIT_SUCCESS;
 }
