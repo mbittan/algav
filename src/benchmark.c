@@ -36,15 +36,21 @@ void bench_insert_briandais() {
   }
 }
 
+void bench_destroy_briandais() {
+  destroy_briandais(&tree);
+}
+
 int main() {
   l = fichiers_reguliers(SHAKESPEARE_DIR);
 
   printf("Benchmarking insertion in de la Briandais tries :\n\
 Inserting all Shakespeare plays...\n");
-  printf("Insertion done in %ld microseconds.\n",
-	 bench(bench_insert_briandais));
+  printf("Insertion done in %f seconds.\n",
+	 MS_TO_S(bench(bench_insert_briandais)));
 
-  destroy_briandais(&tree);
+  printf("Benchmarking destruction of a de la Briandais trie :\n");
+  printf("Destruction done in %f seconds.\n",
+	 MS_TO_S(bench(bench_destroy_briandais)));
   
   return 0;
 }
