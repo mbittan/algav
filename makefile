@@ -33,7 +33,7 @@ $(LIB)/briandais.a: $(OBJ)/briandais.o
 	ar -rs $@ $<
 
 $(BIN)/benchmark: $(OBJ)/benchmark.o $(OBJ)/gestion_fichier.o $(LIB)/trie_hybride.a $(LIB)/briandais.a $(OBJ)/liste.o
-	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
+	$(CC) $(CFLAGS) -o $@ $^ -I$(INC) -pthread
 
 $(BINTEST)/liste_tests : $(OBJ)/liste.o $(OBJ)/liste_tests.o
 	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)

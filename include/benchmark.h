@@ -2,10 +2,14 @@
 #define BENCHMARK_H_
 
 #include <sys/time.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "briandais.h"
 #include "gestion_fichier.h"
 #include "trieHybride_complexe.h"
+
+#define _XOPEN_SOURCE 777
 
 #define MS_TO_S(ms) ((double)ms/1000000)
 
