@@ -138,6 +138,11 @@ void bench_search_briandais() {
   printf("\bFound %d/%d words\n", found, not_found);
 }
 
+void print_line() {
+  printf("\n===================================================================\
+=============\n\n");
+}
+
 int main() {
   l = fichiers_reguliers(SHAKESPEARE_DIR);
 
@@ -145,16 +150,19 @@ int main() {
 Inserting all Shakespeare plays...\n");
   printf("Insertion done in %f seconds.\n",
 	 MS_TO_S(bench(bench_insert_briandais)));
+  print_line();
 
   printf("Benchmarking deletion of Hamlet words in de la Briandais trie :\n\
 Deleting all Hamlet words ...\n");
   printf("Deletion done in %f seconds.\n",
 	 MS_TO_S(bench(bench_delete_briandais)));
+  print_line();
 
   printf("Benchmarking search of All's Well and Hamlet words in de la Briandais\
  trie :\nSearching All's Well and Hamlet words ...\n");
   printf("Search done in %f seconds.\n",
 	 MS_TO_S(bench(bench_search_briandais)));
+  print_line();
 
   printf("Benchmarking destruction of a de la Briandais trie :\n");
   printf("Destruction done in %f seconds.\n",
