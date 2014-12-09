@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <string.h>
 
 #include "briandais.h"
 #include "gestion_fichier.h"
@@ -25,9 +26,20 @@ long bench(void (*f)());
  */  
 void bench_insert_briandais();
 
+/* 
+ * Benchmarking function for deletion of Hamlet in Briandais trie.
+ */  
+void bench_delete_briandais();
+
 /*
  * Benchmarking function for destruction of an entire Briandais trie.
  */
 void bench_destroy_briandais();
+
+/* 
+ * Benchmarking function for serching of Hamlet and All's Well words
+ * in Shakespeare's Briandais trie.
+ */  
+void bench_search_briandais();
 
 #endif
