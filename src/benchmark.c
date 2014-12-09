@@ -9,27 +9,19 @@ sem_t lock;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 void* loading_animation(void* a) {
-  while(1) {
-    if(!loading)
-      break;
+  while(loading) {
     printf("\b|");
     fflush(stdout);
-    usleep(250000);
-    if(!loading)
-      break;
+    usleep(125000);
     printf("\b/");
     fflush(stdout);
-    usleep(250000);
-    if(!loading)
-      break;
+    usleep(125000);
     printf("\b-");
     fflush(stdout);
-    usleep(250000);
-    if(!loading)
-      break;
+    usleep(125000);
     printf("\b\\");
     fflush(stdout);
-    usleep(250000);
+    usleep(125000);
   }
   printf("\b");
   fflush(stdout);
