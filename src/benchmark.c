@@ -1,8 +1,12 @@
 #include "benchmark.h"
 
-Liste *l;
+Liste *l, *trees_list;
 briandais_t *tree;
-int loading;
+int loading, nb_trees;
+pthread_t threads[NB_THREADS];
+pthread_mutex_t merge_lock = PTHREAD_MUTEX_INITIALIZER;
+sem_t lock;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 void* loading_animation(void* a) {
   while(1) {
@@ -67,6 +71,56 @@ void bench_insert_briandais() {
   for(i=0; i<l->taille; i++) {
     tree = lire_fichier_briandais((char*)e->data, tree);
     e = e->suiv;
+  }
+}
+
+void* insert_briandais_mthread(void* filename) {
+  briandais_t *t = NULL, *t2 = NULL;
+  t = lire_fichier_briandais((char*)filename, t);
+  pthread_mutex_lock(&merge_lock);
+  if(trees_list->taille > 0) {
+    t2 = (briandais_t*) supprimer_debut(trees_list);
+    pthread_mutex_unlock(&merge_lock);
+    t = merge_briandais(t, t2);
+    pthread_mutex_lock(&merge_lock);
+  }
+  inserer_debut(trees_list, (void*) t);
+  nb_trees--;
+  if(nb_trees == 0)
+    pthread_cond_signal(&cond);
+  pthread_mutex_unlock(&merge_lock);
+  sem_post(&lock);
+
+  pthread_exit(NULL);
+}
+
+void bench_insert_briandais_mthread() {
+  Element *e = l->debut;
+  int i;
+  pthread_t thread;
+  pthread_attr_t attr;
+  briandais_t *t;
+  
+  pthread_attr_init(&attr);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+  if(trees_list == NULL)
+    trees_list = creer_liste();
+  nb_trees = l->taille;
+  sem_init(&lock, 0, NB_THREADS);
+  
+  for(i=0; i<l->taille; i++) {
+    sem_wait(&lock); // pass if a thread is available
+    pthread_create(&thread, &attr, insert_briandais_mthread, e->data);
+    e = e->suiv;
+  }
+  pthread_attr_destroy(&attr);
+  pthread_cond_wait(&cond, &merge_lock);
+
+  tree = (briandais_t*) supprimer_debut(trees_list);
+  while(trees_list->taille > 0) {
+    t = (briandais_t*) supprimer_debut(trees_list);
+    tree = merge_briandais(tree, t);
   }
 }
 
@@ -143,6 +197,10 @@ void print_line() {
 =============\n\n");
 }
 
+
+/*
+ * Main
+ */
 int main() {
   l = fichiers_reguliers(SHAKESPEARE_DIR);
 
@@ -167,6 +225,12 @@ Deleting all Hamlet words ...\n");
   printf("Benchmarking destruction of a de la Briandais trie :\n");
   printf("Destruction done in %f seconds.\n",
 	 MS_TO_S(bench(bench_destroy_briandais)));
+  print_line();
+
+  printf("Benchmarking multithreaded insertion in de la Briandais tries :\n\
+Inserting all Shakespeare plays...\n");
+  printf("Multithreaded insertion done in %f seconds.\n",
+	 MS_TO_S(bench(bench_insert_briandais_mthread)));
   
   return 0;
 }

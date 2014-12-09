@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
+#include <semaphore.h>
 
 #include "briandais.h"
 #include "gestion_fichier.h"
@@ -13,6 +14,8 @@
 #define _XOPEN_SOURCE 777
 
 #define MS_TO_S(ms) ((double)ms/1000000)
+
+#define NB_THREADS 6
 
 /*
  * Standard benchmarking method.
@@ -23,8 +26,16 @@ long bench(void (*f)());
 
 /* 
  * Benchmarking function for insertion in Briandais tries.
+ * The final tree is built by successive insertions.
  */  
 void bench_insert_briandais();
+
+/* 
+ * Benchmarking function for insertion in Briandais tries.
+ * This function builds each tree separately in multiple threads
+ * and merges them.
+ */ 
+void bench_insert_briandais_mthread();
 
 /* 
  * Benchmarking function for deletion of Hamlet in Briandais trie.
