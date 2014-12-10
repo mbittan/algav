@@ -1,6 +1,6 @@
 include ../../makefile.inc
 
-FIGURES: briandais_test.pdf graph_template.pdf
+FIGURES: briandais_test.pdf graph_template.pdf trie_hybride.pdf
 
 all: $(FIGURES)
 
