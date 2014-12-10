@@ -192,6 +192,15 @@ void bench_count_null_briandais() {
 printf("\bFound %d null pointers.\n", count_null_briandais(tree));
 }
 
+void bench_list_briandais() {
+  
+}
+
+void bench_memory_usage_briandais() {
+  printf("\bShakespeare's de la Briandais trie uses %d bytes in memory.\n",
+	 memory_usage_briandais(tree));
+}
+
 void print_line() {
   printf("\n===================================================================\
 =============\n\n");
@@ -248,6 +257,11 @@ Inserting all Shakespeare plays...\n");
   printf("Benchmarking null pointers counting in de la Briandais tries :\n");
   printf("Null pointers counting done in %f seconds.\n",
 	 MS_TO_S(bench(bench_count_null_briandais)));
+  print_line();
+
+  printf("Benchmarking memory usage of Shakespeare's de la Briandais trie :\n");
+  printf("Memory usage benchmark done in %f seconds.\n",
+	 MS_TO_S(bench(bench_memory_usage_briandais)));
   print_line();
 
   // Freeing memory

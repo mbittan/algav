@@ -65,4 +65,16 @@ void bench_count_briandais();
  */  
 void bench_count_null_briandais();
 
+/* 
+ * Benchmarking function for listing words in Shakespeare's Briandais trie.
+ */  
+void bench_list_briandais();
+
+/* 
+ * Benchmarking function for the used space in memory of Shakespeare's
+ * Briandais trie.
+ */  
+void bench_memory_usage_briandais();
+
+
 #endif
