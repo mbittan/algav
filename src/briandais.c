@@ -454,3 +454,10 @@ xmlns=\"http://www.w3.org/2000/svg\"\
   fclose(f);
 }
 
+int memory_usage_briandais(briandais_t *tree) {
+  if(tree == NULL)
+    return 0;
+  
+  return sizeof(briandais_t) + memory_usage_briandais(tree->son)
+    + memory_usage_briandais(tree->brother);
+}

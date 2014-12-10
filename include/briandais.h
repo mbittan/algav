@@ -80,4 +80,7 @@ void export_to_latex(briandais_t *tree, char* filename);
 /* Works for all sizes of trees. */
 void export_to_svg(briandais_t *tree, char* filename);
 
+/* Get memory used by a Briandais trie */
+int memory_usage_briandais(briandais_t *tree);
+
 #endif
