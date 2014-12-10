@@ -13,4 +13,9 @@ briandais_t * conversion(TrieHybride * t);
   Equilibre le trie hybride passe en parametre
 */
 TrieHybride * equilibrer(TrieHybride * t);
+/*
+  Fusionne deux trie hybride. Le resultat est dans t1
+ */
+TrieHybride * fusion_trie_hybride(TrieHybride * t1, TrieHybride * t2);
+
 #endif
