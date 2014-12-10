@@ -2,6 +2,7 @@
 
 Liste *l, *trees_list;
 briandais_t *tree;
+TrieHybride *th;
 int loading, nb_trees;
 pthread_t threads[NB_THREADS];
 pthread_mutex_t merge_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -189,11 +190,46 @@ void bench_count_briandais() {
 }
 
 void bench_count_null_briandais() {
-printf("\bFound %d null pointers.\n", count_null_briandais(tree));
+  printf("\bFound %d null pointers.\n", count_null_briandais(tree));
 }
 
 void bench_list_briandais() {
+  Liste *list = list_briandais(tree);
+  char *tmp;
+  while(list->taille > 0) {
+    tmp = (char*) supprimer_debut(list);
+    free(tmp);
+  }
+  free(list);
+}
+
+void bench_height_briandais() {
+  printf("\bHeight = %d\n", height_briandais(tree));
+}
+
+void bench_average_depth_briandais() {
+  printf("\bAverage depth = %f\n", average_depth_briandais(tree));
+}
+
+void bench_prefix_briandais() {
   
+}
+
+void bench_merge_briandais() {
+
+}
+
+void bench_convert_to_hybrid() {
+  th = convert_to_hybrid(tree);
+}
+
+void bench_export_to_svg() {
+  export_to_svg(tree, "shakespeare_briandais.svg");
+  printf("\bExported to shakespeare_briandais.svg\n");
+}
+
+void bench_worst_insertion_briandais() {
+  tree = insert_briandais(tree, "youtizzzzz");
 }
 
 void bench_memory_usage_briandais() {
@@ -257,6 +293,41 @@ Inserting all Shakespeare plays...\n");
   printf("Benchmarking null pointers counting in de la Briandais tries :\n");
   printf("Null pointers counting done in %f seconds.\n",
 	 MS_TO_S(bench(bench_count_null_briandais)));
+  print_line();
+
+  printf("Benchmarking listing words in de la Briandais tries :\n");
+  printf("Listing (and destrying of list) done in %f seconds.\n",
+	 MS_TO_S(bench(bench_list_briandais)));
+  print_line();
+
+  printf("Benchmarking height computing in Shakespeare's de la Briandais trie :\
+\n");
+  printf("Height computing done in %f seconds.\n",
+	 MS_TO_S(bench(bench_height_briandais)));
+  print_line();
+
+  printf("Benchmarking average depth computing in Shakespeare's de la Briandais\
+ trie :\n");
+  printf("Average depth computing done in %f seconds.\n",
+	 MS_TO_S(bench(bench_average_depth_briandais)));
+  print_line();
+
+  printf("Benchmarking conversion to hybrid trie of Shakespeare's de la \
+Briandais trie :\n");
+  printf("Conversion done in %f seconds.\n",
+	 MS_TO_S(bench(bench_convert_to_hybrid)));
+  print_line();
+
+  printf("Benchmarking worst insertion scenario in Shakespeare's de la\
+ Briandais trie :\n");
+  printf("Insertion of 'youtizzzzz' done in %f seconds.\n",
+	 MS_TO_S(bench(bench_worst_insertion_briandais)));
+  print_line();
+
+  printf("Benchmarking exporting to SVG of Shakespeare's de la Briandais trie\
+ :\n");
+  printf("Export done in %f seconds.\n",
+	 MS_TO_S(bench(bench_export_to_svg)));
   print_line();
 
   printf("Benchmarking memory usage of Shakespeare's de la Briandais trie :\n");

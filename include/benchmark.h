@@ -71,10 +71,50 @@ void bench_count_null_briandais();
 void bench_list_briandais();
 
 /* 
+ * Benchmarking function for computing height of Shakespeare's Briandais trie.
+ */  
+void bench_height_briandais();
+
+/* 
+ * Benchmarking function for computing average depth of Shakespeare's Briandais
+ * trie.
+ */  
+void bench_average_depth_briandais();
+
+/* 
+ * Benchmarking function for finding if a word is a prefix in Shakespeare's
+ * Briandais trie.
+ */  
+void bench_prefix_briandais();
+
+/* 
+ * Benchmarking function for merging 2 Briandais tries (Hamlet and All's Well).
+ */  
+void bench_merge_briandais();
+
+/* 
+ * Benchmarking function for converting Shakespeare's Briandais trie into a
+ * hybrid trie.
+ */  
+void bench_convert_to_hybrid();
+
+/* 
+ * Benchmarking function for exporting Shakespeare's Briandais trie into an
+ * SVG image file viewable with a web browser or Inkscape.
+ */  
+void bench_export_to_svg();
+
+/* 
+ * Benchmarking function for inserting an unknown word in Shakespeare's
+ * Briandais trie. The word will be 'youtizzzzz' to have a worst-case
+ * scenario like insertion.
+ */  
+void bench_worst_insertion_briandais();
+
+/* 
  * Benchmarking function for the used space in memory of Shakespeare's
  * Briandais trie.
  */  
 void bench_memory_usage_briandais();
-
 
 #endif
