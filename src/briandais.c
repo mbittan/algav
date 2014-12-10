@@ -37,7 +37,6 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
       B->brother = tree;
       return B;
     }
-    return tree;
   }
   else if(*word < tree->key) {
     return new_briandais(*word, insert_briandais(NULL, word+1), tree);
@@ -45,16 +44,10 @@ briandais_t* insert_briandais(briandais_t *tree, char* word) {
   else if(*word == tree->key) {
     tree->cpt++;
     tree->son = insert_briandais(tree->son, word+1);
-    return tree;
   }
   else {
     tree->brother = insert_briandais(tree->brother, word);
-    return tree;
   }
-  /* if(is_empty_briandais(tree)) { */
-  /*   tree->brother = new_briandais(*word, insert_briandais(NULL, word+1), NULL); */
-  /*   return tree; */
-  /* } */
   return tree;
 }
 
@@ -66,7 +59,7 @@ int delete_briandais(briandais_t **tree, char* word) {
     return -1;
   
   if((*tree)->key == '\0' && *word == '\0') {
-      return 1;   // tell father to take my brother as a son and destroy me
+    return 1;   // tell father to take my brother as a son and destroy me
   }
 
   if(*word == (*tree)->key) {
@@ -249,6 +242,7 @@ briandais_t* merge_briandais_rec(briandais_t *A, briandais_t *B) {
   else if(A->key == B->key) {
     A->brother = merge_briandais_rec(A->brother, B->brother);
     A->son = merge_briandais_rec(A->son, B->son);
+    free(B);
   }
   else {//if(A->key < B->key) {
     A->brother = merge_briandais_rec(A->brother, B);
