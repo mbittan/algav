@@ -12,26 +12,6 @@
 \usetikzlibrary{shapes}
 \usetikzlibrary{calc,positioning}
 
-\tikzset{
-  treenode/.style = {align=center, inner sep=0pt, text centered,
-    font=\sffamily},
-  arn_n/.style = {treenode, circle, white, font=\sffamily\bfseries, draw=black,
-    fill=black, text width=1.5em},% arbre rouge noir, noeud noir
-  arn_r/.style = {treenode, circle, red, draw=red, 
-    text width=1.5em, very thick},% arbre rouge noir, noeud rouge
-  arn_x/.style = {treenode, rectangle, draw=black,
-    minimum width=0.5em, minimum height=0.5em},% arbre rouge noir, nil
-  racine/.style = {rectangle split, rectangle split horizontal, rounded corners=5pt, sibling distance=5em},
-  fils/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, grow=down, anchor=north,
-                   edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.north), sibling distance=5em},
-                   rectangle split parts=3, 
-                   rectangle split draw splits=false},
-  frere/.style   = {rectangle split, rectangle split horizontal, rounded corners=5pt, grow=right, anchor=west,
-                   edge from parent path={(\tikzparentnode.east) -- (\tikzchildnode.west), sibling distance=5em},
-                   rectangle split parts=3, 
-                   rectangle split draw splits=false}
-}
-
 \begin{document}
 \begin{tikzpicture}[->]
 
@@ -54,6 +34,30 @@
 
 \node at (2,0) (8) {B};
 \draw (1) -- (8);
+
+\node at (2,-1) (2) {A};
+\draw (8) -- (2);
+
+\node at (2, -2) (50) {\$};
+\draw (2) -- (50);
+
+\node at (3,-1) (9) {G};
+\draw (2) -- (9);
+
+\node at (3, -2) (51) {\$};
+\draw (9) -- (51);
+
+\node at (4,-1) (10) {R};
+\draw (9) -- (10);
+
+\node at (4, -2) (52) {\$};
+\draw (10) -- (52);
+
+\node at (5, 0) (11) {Z};
+\draw (8) -- (11);
+
+\node at (5, -1) (53) {\$};
+\draw (11) -- (53);
 
 \end{tikzpicture}
 \end{document}

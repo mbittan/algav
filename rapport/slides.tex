@@ -117,25 +117,43 @@ Comparaison de 2 types de tries :
 
 \begin{frame}
 \frametitle{Arbres de la Briandais}
+\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+\column{.6\textwidth} % Left column and width
 \includegraphics{figures/briandais_test.pdf}
+
+\column{.3\textwidth} % Right column and width
+%\begin{verbatim}
+struct \{\\
+   $\;$char clé;\\
+   $\;$briandais* frere;\\
+   $\;$briandais* fils;\\
+   $\;$int cpt;\\
+\} briandais;
+%\end{verbatim}
+
+\end{columns}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Multiple Columns}
+\frametitle{Tries Hybrides}
 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 
-\column{.45\textwidth} % Left column and width
-\textbf{Heading}
-\begin{enumerate}
-\item Statement
-\item Explanation
-\item Example
-\end{enumerate}
+\column{.6\textwidth} % Left column and width
+\includegraphics{figures/graph_template.pdf}
 
-\column{.5\textwidth} % Right column and width
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+\column{.35\textwidth} % Right column and width
+%\begin{verbatim}
+struct \{\\
+   $\;$char clé;\\
+   $\;$trieHybride* inferieur;\\
+   $\;$trieHybride* egal;\\
+   $\;$trieHybride* superieur;\\
+   $\;$char fin;\\
+\} trieHybride;
+%\end{verbatim}
 
 \end{columns}
 \end{frame}
@@ -151,77 +169,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ul
 \toprule
 \textbf{Opérations} & \textbf{Briandais} & \textbf{Trie Hybride}\\
 \midrule
-Construire Shakespeare & 0.0003262 & 0.562 \\
-Construire Shakespeare MT & 0.0015681 & 0.910 \\
-Suppression & 0 & 0 \\
-Recherche & 0 & 0 \\
-Occupation mémoire & 0.0009271 & 0.296 \\
+Construire Shakespeare & 3,310641 s & 3,128169 s \\
+Construire Shakespeare MT & 1,508106 s & 1,549025 s \\
+Suppression & 0,126963 s & 0,115175 s \\
+Recherche & 0,216970 s & 0,199453 s \\
+Compter mots & 0,004294 s & 0,003283 s \\
+Occupation mémoire & 2.539.008 B & 1.805.664 B \\
 \bottomrule
 \end{tabular}
-\caption{Table caption}
 \end{table}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
+\Huge{\centerline{Merci pour votre attention !}}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
