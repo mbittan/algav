@@ -184,17 +184,32 @@ void bench_search_briandais() {
   printf("\bFound %d/%d words\n", found, not_found);
 }
 
+void bench_count_briandais() {
+  printf("\bFound %d words.\n", count_briandais(tree));
+}
+
+void bench_count_null_briandais() {
+printf("\bFound %d null pointers.\n", count_null_briandais(tree));
+}
+
 void print_line() {
   printf("\n===================================================================\
 =============\n\n");
 }
 
-
 /*
  * Main
  */
 int main() {
+  char* tmp;
+
+  // we get the list of Shakespeare's plays files
   l = fichiers_reguliers(SHAKESPEARE_DIR);
+
+
+  /*******************************************\
+  |*                BENCHMARKS               *|
+  \*******************************************/
 
   printf("Benchmarking insertion in de la Briandais tries :\n\
 Inserting all Shakespeare plays...\n");
@@ -223,6 +238,30 @@ Deleting all Hamlet words ...\n");
 Inserting all Shakespeare plays...\n");
   printf("Multithreaded insertion done in %f seconds.\n",
 	 MS_TO_S(bench(bench_insert_briandais_mthread)));
+  print_line();
+  
+  printf("Benchmarking word counting in de la Briandais tries :\n");
+  printf("Word counting done in %f seconds.\n",
+	 MS_TO_S(bench(bench_count_briandais)));
+  print_line();
+
+  printf("Benchmarking null pointers counting in de la Briandais tries :\n");
+  printf("Null pointers counting done in %f seconds.\n",
+	 MS_TO_S(bench(bench_count_null_briandais)));
+  print_line();
+
+  // Freeing memory
+  destroy_briandais(&tree);
+
+  // destroying l list
+  while(l->taille > 0) {
+    tmp = (char*)supprimer_debut(l);
+    free(tmp);
+  }
+  free(l);
+
+  if(trees_list != NULL)
+    free(trees_list);
   
   return 0;
 }

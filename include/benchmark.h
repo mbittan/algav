@@ -48,9 +48,21 @@ void bench_delete_briandais();
 void bench_destroy_briandais();
 
 /* 
- * Benchmarking function for serching of Hamlet and All's Well words
+ * Benchmarking function for searching of Hamlet and All's Well words
  * in Shakespeare's Briandais trie.
  */  
 void bench_search_briandais();
+
+/* 
+ * Benchmarking function for counting how many words there are
+ * in Shakespeare's Briandais trie.
+ */  
+void bench_count_briandais();
+
+/* 
+ * Benchmarking function for counting how many null pointers there are
+ * in Shakespeare's Briandais trie.
+ */  
+void bench_count_null_briandais();
 
 #endif
