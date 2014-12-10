@@ -61,7 +61,7 @@ Liste* list_briandais(briandais_t *tree);
 int height_briandais(briandais_t *tree);
 
 /* Returns the average depth of a Briandais tree */
-double average_depth(briandais_t *tree);
+double average_depth_briandais(briandais_t *tree);
 
 /* Checks how many words in tree word is the prefix */
 int prefix_briandais(briandais_t *tree, char *word);

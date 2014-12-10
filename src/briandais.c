@@ -196,7 +196,7 @@ int height_briandais(briandais_t *tree) {
   return MAX(son, bro);
 }
 
-double average_depth(briandais_t *tree) {
+double average_depth_briandais(briandais_t *tree) {
   double average = 0;
   int nb_bros = 0;
   briandais_t *t = tree;
