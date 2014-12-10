@@ -1,13 +1,10 @@
 include makefile.inc
 
-all : directories lib_trie_hybride lib_briandais test_exemple_base briandais benchmark liste_tests
-	
-directories: $(OBJ) $(BIN) $(BINTEST) $(LIB)
+all : directories lib_trie_hybride lib_briandais benchmark benchmark_trie_hybride
+
+directories: $(OBJ) $(BIN) $(LIB)
 
 $(LIB) : 
-	mkdir -p $@
-
-$(BINTEST) : 
 	mkdir -p $@
 
 $(OBJ):
@@ -16,9 +13,11 @@ $(OBJ):
 $(BIN):
 	mkdir -p $@
 
-benchmark : $(BIN)/benchmark
+benchmark_trie_hybride : $(BIN)/bench_trie_hybride
 
-liste_tests : $(BINTEST)/liste_tests
+$(BIN)/bench_trie_hybride : $(OBJ)/gestion_fichier.o $(OBJ)/bench_trie_hybride.o $(LIB)/trie_hybride.a $(LIB)/briandais.a $(OBJ)/liste.o 
+	$(CC) $(CFLAGS) -o $@ $^ -I$(INC) -pthread
+benchmark : $(BIN)/benchmark
 
 test_exemple_base : $(BIN)/test_exemple_base
 
@@ -35,22 +34,13 @@ $(LIB)/briandais.a: $(OBJ)/briandais.o
 $(BIN)/benchmark: $(OBJ)/benchmark.o $(OBJ)/gestion_fichier.o $(LIB)/trie_hybride.a $(LIB)/briandais.a $(OBJ)/liste.o
 	$(CC) $(CFLAGS) -o $@ $^ -I$(INC) -pthread
 
-$(BINTEST)/liste_tests : $(OBJ)/liste.o $(OBJ)/liste_tests.o
-	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
-
-$(BIN)/test_exemple_base : $(OBJ)/gestion_fichier.o $(OBJ)/test_exemple_base.o $(LIB)/trie_hybride.a $(LIB)/briandais.a $(OBJ)/liste.o 
-	$(CC) $(CFLAGS) -o $@ $^ -I$(INC)
+$(OBJ)/bench_trie_hybride.o: $(SRC)/bench_trie_hybride.c
+	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC)
 
 $(OBJ)/benchmark.o: $(SRC)/benchmark.c $(INC)/benchmark.h
 	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC)
 
-$(OBJ)/test_exemple_base.o : $(SRC)/test_exemple_base.c
-	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
-
 $(OBJ)/liste.o : $(SRC)/liste.c
-	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
-
-$(OBJ)/liste_tests.o : $(SRCTEST)/liste_tests.c
 	$(CC) $(CFLAGS) -c -o $@ $^ -I$(INC)
 
 $(OBJ)/gestion_fichier.o : $(SRC)/gestion_fichier.c $(INC)/gestion_fichier.h

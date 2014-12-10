@@ -6,5 +6,3 @@ OBJ = obj
 BIN = bin
 LIB = lib
 RAPPORT = rapport
-SRCTEST = $(SRC)/tests
-BINTEST = $(BIN)/tests

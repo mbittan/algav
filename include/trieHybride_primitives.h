@@ -52,19 +52,19 @@ int est_trie_vide(TrieHybride * t);
 TrieHybride * creer_mot(char * mot);
 
 /*
-  Fonction creant un fichier xml (valide et indenté !) représentant le trie 
-  hybride passe en parametre
-*/
-void generer_fichier_xml(char * nom_fichier, TrieHybride * t);
-
-/*
   Crée le fichier (dot) répresentant le trie hybride passee en parametre
  */
 void generer_fichier_dot(char * nom_fichier, TrieHybride * t);
+
 /*
-  Affiche le trie hybride sur la sortie standard (moche)
+  Cree le fichier svg correspondant au trie hybride
 */
-void print_trie_hybride(TrieHybride * t);
+void creer_fichier_svg(char * nom_fichier, TrieHybride * t);
+
+/*
+  Cree le fichier latex correspondant au trie hybride
+*/
+void generer_fichier_latex(char * nom_fichier, TrieHybride * t);
 
 /*
   Fonction permettant d'ajouter un mot au trie passé en parametre
