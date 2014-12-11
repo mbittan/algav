@@ -83,10 +83,18 @@ TrieHybride * equilibrer(TrieHybride * t){
   int diff=hinf-hsup;
 
   //Si la difference des hauteurs est plus grande que 3 en valeur absolue, on
-  //effectue la rotation appropriee
-  if(diff>=3){
+  //effectue les rotations appropriees, dans l'esprit des AVL
+  if(diff>=2){
+    int dinf=hauteur(t->inferieur->inferieur)-hauteur(t->inferieur->superieur);
+    if(dinf<=-1){
+      t->inferieur=rotG(t->inferieur);
+    }
     t=rotD(t);
-  }else if(diff<=-3){
+  }else if(diff<=-2){  
+    int dsup=hauteur(t->superieur->inferieur)-hauteur(t->superieur->superieur);
+    if(dsup>=1){
+      t->superieur=rotD(t->superieur);
+    }
     t=rotG(t);
   }
   return t;
