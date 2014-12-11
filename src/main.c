@@ -271,7 +271,7 @@ void equil(int type){
     printf("Hauteur avant equilibrage : "BLUE"%d"NORMAL
 	   ", profondeur moyenne : "BLUE"%f\n"NORMAL,hauteur(t),profondeur_moyenne(t));
     t=equilibrer(t);
-    printf("Hauteur avant equilibrage : "BLUE"%d"NORMAL
+    printf("Hauteur apres equilibrage : "BLUE"%d"NORMAL
 	   ", profondeur moyenne : "BLUE"%f\n"NORMAL,hauteur(t),profondeur_moyenne(t));
   }else{
     printf("L'equilibrage n'existe pas pour les arbres de la briandais\n");
@@ -391,7 +391,7 @@ int main(int argc, char ** argv){
     printf("6  : Afficher le nombre de pointeurs vers NULL\n");
     printf("7  : Calculer la hauteur de l'arbre\n");
     printf("8  : Profondeur moyenne de l'arbre\n");
-    printf("9  : Nombre de mots prefixes par un certain mot\n");
+    printf("9  : Nombre de mots prefixés par un certain mot\n");
     printf("10 : Suppresion de mots\n");
     printf("11 : Equilibrage (seulement pour trie hybride)\n");
     printf("12 : Exporter vers latex (marche seulement avec des petits arbres)\n");
@@ -401,7 +401,8 @@ int main(int argc, char ** argv){
     printf("15 : Conversion vers %s (Les fonctions s'appliqueront alors\n a l'arbre converti)\n", 
 	   type==THTYPE ? "arbre de la briandais" : "trie hybride");
     printf("16 : Quitter\n");
-    printf("Votre choix : ");
+    printf("Votre choix : ");  
+    
     traitement_choix(getchoix(1,16),&type);
   }
   return EXIT_SUCCESS;
