@@ -289,10 +289,12 @@ TrieHybride* convert_to_hybrid(briandais_t* tree) {
   if(tree == NULL)
     return NULL;
   if(tree->son != NULL) {
-    if(tree->son->key == '\0')
-      end++;
-    else
+    if(tree->son->key == '\0'){
+      end=1;
+      th_son = convert_to_hybrid(tree->son->brother);
+    }else{
       th_son = convert_to_hybrid(tree->son);
+    }
   }
   if(tree->brother != NULL)
     th_bro = convert_to_hybrid(tree->brother);
