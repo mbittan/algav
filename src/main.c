@@ -263,7 +263,7 @@ void usemem(int type){
   }else{
     res=memory_usage_briandais(b);
   }
-  printf("Usage memoire :"BLUE" %d octets\n"NORMAL, res);
+  printf("Utilisation memoire :"BLUE" %d octets\n"NORMAL, res);
 }
 
 void equil(int type){
@@ -397,7 +397,7 @@ int main(int argc, char ** argv){
     printf("12 : Exporter vers latex (marche seulement avec des petits arbres)\n");
     printf("13 : Exporter vers svg (marche avec toutes tailles d'arbre, mais\n");
     printf("requiert beaucoup de temps pour les tries hybrides)\n");
-    printf("14 : Usage memoire\n");
+    printf("14 : Utilisation memoire\n");
     printf("15 : Conversion vers %s (Les fonctions s'appliqueront alors\n a l'arbre converti)\n", 
 	   type==THTYPE ? "arbre de la briandais" : "trie hybride");
     printf("16 : Quitter\n");
