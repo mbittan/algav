@@ -2,8 +2,11 @@ include ../makefile.inc
 
 FIGURES = figures
 
-all: rapport.pdf slides.pdf
+all: rapport.pdf slides.pdf th.pdf
 
+th.pdf : triehybride.tex
+	cd $(FIGURES) && make
+	pdflatex $<
 rapport.pdf: rapport.tex
 	cd $(FIGURES) && make
 	pdflatex $<
