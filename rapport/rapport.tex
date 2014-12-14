@@ -309,13 +309,13 @@ Soient :
     \textbf{racine} & src/trieHybride\_primitives.c, $l30-32$  & $\Theta(1)$ \\ \hline 
     \multicolumn{3}{|l|}{\it{Renvoie le caractère présent à la racine du trie hybride.}} \\ \hline
     \textbf{inferieur} & src/trieHybride\_primitives.c, $l35-37$  & $\Theta(1)$ \\ \hline 
-    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par une}} \\     
+    \multicolumn{3}{|l|}{\it{Renvoie le sous-arbre qui représente tout les mots qui commencent par une}} \\     
     \multicolumn{3}{|l|}{\it{lettre inférieure à celle présente à la racine.}} \\ \hline  
     \textbf{egal} & src/trieHybride\_primitives.c, $l39-41$  & $\Theta(1)$ \\ \hline 
-    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par la}} \\ 
+    \multicolumn{3}{|l|}{\it{Renvoie le sous-arbre qui représente tout les mots qui commencent par la}} \\ 
     \multicolumn{3}{|l|}{\it{lettre qui se trouve à la racine.}} \\ \hline  
     \textbf{superieur} & src/trieHybride\_primitives.c, $l43-45$  & $\Theta(1)$ \\ \hline 
-    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par une}} \\     
+    \multicolumn{3}{|l|}{\it{Renvoie le sous-arbre qui représente tout les mots qui commencent par une}} \\     
     \multicolumn{3}{|l|}{\it{lettre supérieure à celle présente à la racine.}} \\ \hline  
     \textbf{est\_trie\_vide} & src/trieHybride\_primitives.c, $l48-50$  & $\Theta(1)$ \\ \hline 
     \multicolumn{3}{|l|}{\it{Renvoie vrai si le trie est vide}} \\   \hline   
@@ -326,12 +326,12 @@ Soient :
 \end{center}
 
 \paragraph{\textbf{Complexités}}
-Insertion (pareil pour recherche): Si le trie est plus ou moins equilibré, on divise par trois l'espace dans lequel on doit chercher le mot à chaque appel récursif. On a donc l'équation de réccurence suivante :
+Insertion (idem pour recherche): Si le trie est plus ou moins équilibré, on divise par trois l'espace dans lequel on doit chercher le mot à chaque appel récursif. On a donc l'équation de récurrence suivante :
   \[
     T(n)=T\left(\frac{n}{3}\right)+\Theta(1)
   \]
-  D'après la deuxième règle du theorème Maitre ($a=1,b=3$), on a $T(n)=log_3(n)$. Sachant que l'on parcourt forcément toute la chaine qui représente le mot, il faut prendre ceci en compte dans le calcul de la complexité. On a donc   la complexité suivante : $log_3(n)+L$, avec $L$ la longueur du mot que l'on cherche (ou insère).\\
-  Dans le cas ou le trie est totalement déséquillibré, on a une complexité proche de celle d'un arbre de la briandais. En effet, le trie hybride le plus déséquilibré est le trie qui n'a pas de fils gauche (ou droit). C'est le cas ou tout les mots ont été insérés dans l'ordre alphabetique(ou l'inverse de l'ordre alphabetique). Chaque noeud à alors deux fils, le premier représentant les mots commencant par la lettre contenue dans le noeud, et le second représentant les mots commençant par une autre lettre.
+  D'après la deuxième règle du théorème maître ($a=1,b=3$), on a $T(n)=log_3(n)$. Sachant que l'on parcourt forcément toute la chaîne qui représente le mot, il faut prendre ceci en compte dans le calcul de la complexité. On a donc la complexité suivante : $log_3(n)+L$, avec $L$ la longueur du mot que l'on cherche (ou insère).\\
+  Dans le cas où le trie est totalement déséquilibré, on a une complexité proche de celle d'un arbre de la Briandais. En effet, le trie hybride le plus déséquilibré est le trie qui n'a pas de fils gauche (ou droit). C'est le cas où tout les mots ont été insérés dans l'ordre alphabétique (ou l'inverse de l'ordre alphabétique). Chaque noeud a alors deux fils, le premier représentant les mots commençant par la lettre contenue dans le noeud, et le second représentant les mots commençant par une autre lettre.
 
 \section{Fonctions avancées}
 
@@ -352,23 +352,23 @@ Insertion (pareil pour recherche): Si le trie est plus ou moins equilibré, on d
 
 \subsection{Complexités}
 \paragraph{\textbf{Comptage\_mots}}
-Pour ces fonctions, dans tout les cas on parcourt l'ensemble de l'arbre. Si l'arbre est equilibré, on a l'équation de récurrence suivante :
+Pour ces fonctions, dans tout les cas on parcourt l'ensemble de l'arbre. Si l'arbre est équilibré, on a l'équation de récurrence suivante :
 \[
 T(n)=3T\left(\frac{n}{3}\right)+\Theta(1)
 \] 
-D'après le cas 1 du théoreme Maitre, le resultat de cette équation est : 
+D'après le cas 1 du théorème maître, le résultat de cette équation est : 
 \[
 T(n)=n^{log_{3}3}=n \; \text{ avec } a=3, b=3, \epsilon=1
 \]
 Même principe pour afficher\_liste\_mots, liste\_mots, hauteur, profondeur\_moyenne et comptage\_nil.
 
 \paragraph{\textbf{Suppression}}
-Principe : On parcourt d'abord le trie pour trouver le noeud qui correspond a la fin du mot que l'on veut supprimer.
-Si le mot n'est pas présent, le trie reste inchangé. Une fois que l'on a trouvé ce noeud, on indique que celui-ci ne représente plus la fin d'un mot. Si ce noeud ne possede pas de fils $egal$, cela veut dire qu'il n'y a aucun mot dans l'arbre prefixé par celui que l'on veut supprimer. On peut donc supprimer ce noeud. Trois cas peuvent alors se produire : \\
+Principe : On parcourt d'abord le trie pour trouver le noeud qui correspond à la fin du mot que l'on veut supprimer.
+Si le mot n'est pas présent, le trie reste inchangé. Une fois que l'on a trouvé ce noeud, on indique que celui-ci ne représente plus la fin d'un mot. Si ce noeud ne possède pas de fils $egal$, cela veut dire qu'il n'y a aucun mot dans l'arbre prefixé par celui que l'on veut supprimer. On peut donc supprimer ce noeud. Trois cas peuvent alors se produire : \\
 \begin{enumerate}
 \item Le noeud n'a aucun fils. On peut alors le supprimer sans se soucier de ses fils. 
-\item Le noeud a un seul fils (soit le gauche, soit le droit). Dans ce cas, peut remplacer le noeud à supprimer par son fils.
-\item Le noeud a deux fils (gauche et droit donc). Il faut alors trouver un remplaçant pour le noeud que l'on va supprimer. Le bon candidat est le minimum (le fils le plus a gauche, qui n'a pas de fils gauche) du fils droit, comme on le ferait dans un ABR. En effet, dans ce cas, on a un noeud qui contient un caractere plus grand que tout les elements du sous-arbre gauche, et plus petit que tout ceux du sous-arbre droit. Cela nous permet de garder les proprietes du trie hybride. De plus, comme le minimum n'a pas de fils gauche, on peut le remplacer par son fils droit sans problème.
+\item Le noeud a un seul fils (soit le gauche, soit le droit). Dans ce cas, on peut remplacer le noeud à supprimer par son fils.
+\item Le noeud a deux fils (gauche et droit donc). Il faut alors trouver un remplaçant pour le noeud que l'on va supprimer. Le bon candidat est le minimum (le fils le plus a gauche, qui n'a pas de fils gauche) du fils droit, comme on le ferait dans un ABR. En effet, dans ce cas, on a un noeud qui contient un caractère plus grand que tout les éléments du sous-arbre gauche, et plus petit que tout ceux du sous-arbre droit. Cela nous permet de garder les propriétés du trie hybride. De plus, comme le minimum n'a pas de fils gauche, on peut le remplacer par son fils droit sans problème.
 \end{enumerate}
 Une fois le noeud supprimé, il est possible que l'on doive supprimer le père de celui-ci. On effectue la suppression si la branche du milieu du père est vide, et que le père ne représente pas la fin d'un mot.
 \begin{algorithm}
@@ -424,7 +424,7 @@ La fonction supprimer\_racine est la fonction qui permet de gérer les trois cas
   \end{algorithmic}
 \end{algorithm}
 
-La fonction extraire\_min est une fonction qui permet de recuperer le minimum d'un trie. Le pere du minimum reçoit alors le fils droit de celui. Le minimum que l'on recupère avec cette fonction n'a donc ni fils gauche, ni fils droit.
+La fonction extraire\_min est une fonction qui permet de récupérer le minimum d'un trie. Le père du minimum reçoit alors le fils droit de celui-ci. Le minimum que l'on récupère avec cette fonction n'a donc ni fils gauche, ni fils droit.
 
 \section{Fonctions complexes}
 
@@ -436,7 +436,7 @@ La fonction extraire\_min est une fonction qui permet de recuperer le minimum d'
   \end{tabular}
 \end{center}
 
-Principe : La fonction d'équilibrage fonctionne dans le même esprit que celle des AVL. Dans un premier temps on appelle récursivement la fonction sur les trois sous-arbres. Ensuite, on calcule la difference de hauteur entre le sous-arbre gauche et le sous-arbre droit. Si cette différence est plus grande que deux, on effectue une rotation droite de l'arbre. De plus, si les deux fils du fils gauche ont une difference de hauteur plus grande (en valeur absolue) que -1, on effectue une rotation gauche sur ce fils. Si la différence de hauteur est plus petite que -2, on effectue le symétrique des opérations précédentes (i.e. les rotations gauche deviennent des rotations droites et inversement).
+Principe : La fonction d'équilibrage fonctionne dans le même esprit que celle des AVL. Dans un premier temps on appelle récursivement la fonction sur les trois sous-arbres. Ensuite, on calcule la différence de hauteur entre le sous-arbre gauche et le sous-arbre droit. Si cette différence est plus grande que deux, on effectue une rotation droite de l'arbre. De plus, si les deux fils du fils gauche ont une différence de hauteur plus grande (en valeur absolue) que 1, on effectue une rotation gauche sur ce fils. Si la différence de hauteur est plus petite que 2 (en valeur absolue), on effectue le symétrique des opérations précédentes (i.e. les rotations gauches deviennent des rotations droites et inversement).
 \begin{algorithm}
   \caption{Equilibrage Trie Hybride}
   \begin{algorithmic}[1]
@@ -464,7 +464,7 @@ Principe : La fonction d'équilibrage fonctionne dans le même esprit que celle 
   \end{algorithmic}
 \end{algorithm}
 
-Les fonctions de rotation sont quasiment identiques a celles présentées en cours. Leur complexité est donc $\Theta(1)$. La complexité de la fonction d'équilibrage est $O(n^2)$, car pour chaque noeud on calcule la hauteur de ses filsdroit et gauche. On pourrait améliorer la complexité en ajoutant un champs $hauteur$ dans la structure, tenu à jour a chaque insertion/suppression.
+Les fonctions de rotations sont quasiment identiques à celles présentées en cours. Leur complexité est donc $\Theta(1)$. La complexité de la fonction d'équilibrage est $O(n^2)$, car pour chaque noeud on calcule la hauteur de ses fils droit et gauche. On pourrait améliorer la complexité en ajoutant un champ $hauteur$ dans la structure, tenu à jour à chaque insertion/suppression.
 
 \chapter{Comparaison}
 
