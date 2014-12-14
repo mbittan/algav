@@ -31,6 +31,21 @@
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
 % These packages are all incorporated in the memoir class to one degree or another...
+\usepackage{amsthm} % for theorems and definitions
+\usepackage{amsmath}
+\newtheorem{definition}{Définition}
+\usepackage{minted}
+\usepackage{algorithm}
+\usepackage{algpseudocode} 
+\usepackage{pgf}
+\renewcommand{\algorithmicend}{\textbf{fin}}
+\renewcommand{\algorithmicif}{\textbf{si}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicelse}{\textbf{sinon}}
+\newcommand{\algorithmicelsif}{\algorithmicelse\ \algorithmicif}
+\newcommand{\algorithmicendif}{\algorithmicend\ \algorithmicif}
+\renewcommand{\algorithmicreturn}{\textbf{retourner}}
+\renewcommand{\algorithmicfunction}{\textbf{fonction}}
 
 %%% HEADERS & FOOTERS
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
@@ -50,6 +65,8 @@
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
 
+
+
 %%% END Article customizations
 
 %%% The "real" document content comes below...
@@ -61,5 +78,394 @@
 
 \begin{document}
 \maketitle
-\chapter{toto}
+
+\chapter{Introduction}
+
+%\section{Introduction}
+\paragraph{} La représentation d'un grand ensemble de données peut vite être \
+très coûteuse en espace mémoire. Ce coût est d'autant plus important lorsque \
+cet ensemble contient de nombreuses répétitions. Il devient alors primordial \
+de trouver une structure de données permettant de diminuer un maximum cette \
+perte d'espace inutile dûe au fait que les données sont représentées à \
+plusieurs reprises en mémoire. De plus, il peut être intéressant, dans \
+certains cas, que plusieurs éléments de cet ensembe de données partagent une \
+partie de leurs données. De plus, il est important de conserver de bonnes \
+performances en terme de temps d'exécution.
+\paragraph{} Dans ce devoir de programmation, nous allons étudier deux structures\
+ de données permettant de représenter un dictionnaire de mots (représentés sur \
+8 bits, en codage ASCII). Une des particularités de ce type de données tient au\
+ fait que de nombreux mots partagent des préfixes communs. Il parait alors \
+intéressant d'essayer d'exploiter cette propriété pour réduire l'empreinte \
+mémoire du  dictionnaire et, par la même occasion, améliorer les performances \
+en terme de temps. Les deux structures en question sont les arbres (ou tries) \
+de la Briandais et les tries hybrides.
+\begin{definition}[Arbre de la Briandais]
+Un arbre (ou trie) de la Briandais est un arbre binaire. Chaque noeud contient \
+un caractère, un frère et un fils. Le fils correspond au caractère suivant et \
+le frère correspond à un caractère alternatif pour la même position dans le \
+mot. De plus, on définit un caractère $\epsilon$ représentant une fin de mot.
+\end{definition}
+\begin{definition}[Trie hybride]
+Un trie hybride est un arbre ternaire de recherche. Chaque noeud contient un \
+caractère et trois fils qui sont eux mêmes des tries hybrides : un fils gauche \
+contenant un caractère inférieur à celui du noeud, un fils droit contenant un \
+caractère supérieur à celui du noeud, et un fils central contenant le caractère\
+ suivant du mot. Chaque noeud contient également un marqueur de fin de mot, si \
+ce noeud correspond à la dernière lettre d'un mot.
+\end{definition}
+
+\chapter{Arbres de la Briandais}
+
+\section{Structure}
+
+Pour implanter cette structure de données en C, nous avons défini la structure \
+suivante dans \textit{include/briandais.h}:
+\inputminted[firstline=16, lastline=21]{c}{../include/briandais.h}
+Le compteur \texttt{cpt} représente le nombre de mots pour lesquels ce noeuds est utilisé, et sera utilisé lors de la suppression (voir \ref{subsec:suppression}).\\
+Le caractère $\epsilon$ choisi est '\textbackslash 0' car il s'agit, dans de nombreux \
+langagues, dont le C, du caractère de fin de chaîne, ce qui permet d'éviter \
+l'ajout d'un caractère en fin de chaîne lors d'une insertion dans l'arbre. \
+De plus, ce caractère n'est pas imprimable, et ne portera donc pas confusion \
+lors de l'affichage des mots de l'arbre.
+
+\section{Primitives}
+Soient :
+\begin{itemize}
+\item $\mathcal{A}$ l'alphabet utilisé dans le dictionnaire,
+\item $L$ la longueur de la clé,
+\item si $T$ est un arbre, alors $|T|$ est le nombre de noeuds de $T$.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Fonction} & \textbf{Emplacement} & \textbf{Complexité}\\
+\hline
+\textbf{new\_briandais(c, S, B)} & src/briandais.c, $l5$ & $\Theta(1)$\\
+\hline
+\multicolumn{3}{|l|}{\it{Renvoie un arbre de la Briandais contenant} \texttt{c} \it{avec comme fils \texttt{S} et comme frère \texttt{B}.}} \\
+\hline
+\textbf{new\_empty\_briandais()} & src/briandais.c, $l16$ & $\Theta(1)$\\
+\hline
+\multicolumn{3}{|l|}{\it{Renvoie un arbre de la Briandais contenant} \texttt{'\textbackslash 0'} \it{avec comme fils \texttt{nil} et comme frère \texttt{nil}.}} \\
+\hline
+\textbf{is\_empty\_briandais(T)} & src/briandais.c, $l20$ & $\Theta(1)$\\
+\hline
+\multicolumn{3}{|l|}{\it{Renvoie \texttt{vrai} si \texttt{T} a \texttt{'\textbackslash 0'} comme caractère et comme fils et frère \texttt{nil}.}} \\
+\hline
+\textbf{insert\_briandais(T, mot)} & src/briandais.c, $l24$ & $O(L \times |\mathcal{A}|)$\\
+\hline
+\multicolumn{3}{|l|}{\it{Renvoie \texttt{T} avec \texttt{mot} inséré.}} \\
+\hline
+\textbf{destroy\_briandais(T)} & src/briandais.c, $l95$ & $\Theta(|T|)$\\
+\hline
+\multicolumn{3}{|l|}{\it{Renvoie \texttt{T} avec \texttt{mot} inséré.}} \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{\textbf{Complexités}} Les complexités sont exprimées en nombre de comparaisons de caractères. Les fonctions \texttt{new\_briandais}, \texttt{new\_empty\_briandais} et \texttt{is\_empty\_briandais} sont en temps constant puisque l'on ne parcourt qu'un seul noeud de l'arbre avec au plus une unique comparaison. Pour \texttt{insert\_briandais}, on parcourt \texttt{L} noeuds vers le bas (vers les fils) et à chaque niveau, on parcourt au plus $|\mathcal{A}|$ noeuds, d'où cette complexité en $O(L \times |\mathcal{A}|)$. Quant à \texttt{destroy\_briandais}, il s'agit d'un parcours complet de l'arbre, d'où cette complexité en $\Theta(|T|)$.
+
+\section{Fonctions avancées}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Fonction} & \textbf{Emplacement} & \textbf{Complexité}\\
+\hline
+\textbf{delete\_briandais(T, mot)} & src/briandais.c, $l54$ & $O(L \times |\mathcal{A}|)$\\
+\hline
+\textbf{search\_briandais(T, mot)} & src/briandais.c, $l133$ & $O(L \times |\mathcal{A}|)$\\
+\hline
+\textbf{count\_briandais(T)} & src/briandais.c, $l150$ & $\Theta(|T|)$\\
+\hline
+\textbf{count\_null\_briandais(T)} & src/briandais.c, $l158$ & $\Theta(|T|)$\\
+\hline
+\textbf{list\_briandais(T)} & src/briandais.c, $l180$ & $\Theta(|T|)$\\
+\hline
+\textbf{height\_briandais(T)} & src/briandais.c, $l190$ & $\Theta(|T|)$\\
+\hline
+\textbf{average\_depth\_briandais(T)} & src/briandais.c, $l199$ & $\Theta(|T|)$\\
+\hline
+\textbf{prefix\_briandais(T, mot)} & src/briandais.c, $l215$ & $O(L \times |\mathcal{A}|)$\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Complexités}
+\label{subsec:suppression}
+
+\paragraph{Suppression} Le principe de l'algorithme récursif de suppression se déroule en deux étapes :
+\begin{itemize}
+\item On parcourt l'arbre comme pour une recherche : si le mot à supprimer n'est pas dans l'arbre, on s'arrête, sinon,
+\item à partir du noeud contenant $\epsilon$ représentant la fin du mot à supprimer, on remonte jusqu'à la racine en décrémentant le compteur de chaque noeud faisant parti du mot. Si le compteur vaut 0, on détruit le noeud en prenant soin de rattacher un éventuel frère au père ou au frère précédent.
+\end{itemize}
+Cet unique parcours explique cette complexité en $O(L \times |\mathcal{A}|)$, identique à celle de la recherche ou du préfixe.
+
+\begin{algorithm}
+  \caption{Suppression Arbre de la Briandais}
+  \begin{algorithmic}[1]
+    \Function{Suppression}{$T,mot$}\\
+    \Comment{On va utiliser la valeur de retour de la fonction pour dire à son père quoi faire}
+    \If{T = nil}
+       \State{\Return{-1}}
+       \Comment{mot n'est pas dans l'arbre}
+    \ElsIf{T.cle = '\textbackslash 0' \textbf{et} mot[0] = '\textbackslash 0'}
+       \State{\Return{1}}
+       \Comment{Détruis moi}
+    \ElsIf{T.cle = mot[0]}
+       \State{r := Suppression(T.fils, mot[1:])}
+       \If{r = 1}
+          \State{T.cpt := T.cpt-1}
+          \State{s := T.fils}
+          \State{T.fils := s.frere}
+          \State{Detruire(s)}
+          \If{T.cpt = 0}
+             \State{\Return{1}}
+             \Comment{Détruis moi}
+          \EndIf
+       \ElsIf{r = 0}
+          \State{T.cpt := T.cpt-1}
+       \EndIf
+       \State{\Return{0}}
+       \Comment{Ne me détruis pas, mot est dans T}
+    \ElsIf{T.cle $<$ mot[0]}
+       \State{r := Suppression(T.frere, mot)}
+       \If{r = 1}
+          \State{b := T.frere}
+          \State{T.frere := b.frere}
+          \State{Detruire(b)}
+       \EndIf
+       \State{\Return{0}}
+       \Comment{Ne me détruis pas, mot est dans T}
+    \EndIf
+    \State{\Return{-1}}
+    \Comment{mot n'est pas dans l'arbre}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\section{Fonctions complexes}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Fonction} & \textbf{Emplacement} & \textbf{Complexité}\\
+\hline
+\textbf{merge\_briandais(T, U)} & src/briandais.c, $l275$ & $\Theta(|T|+|U|)$\\
+\hline
+\textbf{convert\_to\_hybrid(T)} & src/briandais.c, $l286$ & $\Theta(|T|)$\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Complexités} La fonction de conversion correspond à un simple parcours de l'arbre, d'où cette complexité en $\Theta(|T|)$. La fusion, quant à elle, est fait en place. On parcourt donc les deux arbres ``en même temps'', en rattachant les parties non communes des deux arbres et en détruisant d'un des deux arbres les parties communes (pour éviter les fuites mémoire). Dans le pire des cas, les deux arbres n'ont rien en commun, on parcourt donc les deux arbres entièrement. De plus, on doit refaire un parcous de l'arbre fusionné pour mettre à jour les compteurs de chaque noeud. On obtient donc cette complexité en $\Theta(|T|+|U|)$. Ci-dessous, l'algorithme de fusion ne contient que la partie récursive, sans le parcours de mise à jour des compteurs effectué a posteriori.
+
+\begin{algorithm}
+  \caption{Fusion Arbres de la Briandais}
+  \begin{algorithmic}[1]
+    \Function{Fusion}{$T,U$}
+    \If{T = nil}
+       \State{\Return{U}}
+    \ElsIf{U = nil}
+       \State{\Return{T}}
+    \EndIf
+    \If{T.cle $>$ U.cle}
+       \State{U.frere := Fusion(T, U.frere)}
+       \State{\Return{U}}
+    \ElsIf{T.cle = U.cle}
+       \State{T.frere := Fusion(T.frere, U.frere)}
+       \State{T.fils := Fusion(T.fils, U.fils)}
+       \State{Detruire(U)}
+    \Else
+       \State{T.frere := Fusion(T.frere, U)}
+    \EndIf
+    \State{\Return{T}}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\chapter{Tries hybrides}
+
+\section{Structure}
+
+Pour implanter les tries hybrides en C, nous avons défini la structure suivante dans \textit{include/structureTrieHybride.h} :
+\inputminted[firstline=4, lastline=10]{c}{../include/structureTrieHybride.h}
+
+\section{Primitives}
+Soient :
+\begin{itemize}
+\item $L$ la longueur de la clé,
+\item $n$ est le nombre de mots insérés.
+\end{itemize}
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+    \hline  \textbf{Fonctions} & \textbf{Emplacement} & \textbf{Complexité}\\  \hline
+    \textbf{trie\_hybride} & src/trieHybride\_primitives.c, $l4-17$ & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Fonction permettant de créer un trie hybride.}} \\ \hline
+    \textbf{free\_trie\_hybride} & src/trieHybride\_primitives.c, $l20-27$ & $\Theta(n)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Libère la mémoire associée au trie hybride.}} \\ \hline
+    \textbf{racine} & src/trieHybride\_primitives.c, $l30-32$  & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Renvoie le caractère présent à la racine du trie hybride.}} \\ \hline
+    \textbf{inferieur} & src/trieHybride\_primitives.c, $l35-37$  & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par une}} \\     
+    \multicolumn{3}{|l|}{\it{lettre inférieure à celle présente à la racine.}} \\ \hline  
+    \textbf{egal} & src/trieHybride\_primitives.c, $l39-41$  & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par la}} \\ 
+    \multicolumn{3}{|l|}{\it{lettre qui se trouve à la racine.}} \\ \hline  
+    \textbf{superieur} & src/trieHybride\_primitives.c, $l43-45$  & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Renvoie le sous arbre qui représente tout les mots qui commencent par une}} \\     
+    \multicolumn{3}{|l|}{\it{lettre supérieure à celle présente à la racine.}} \\ \hline  
+    \textbf{est\_trie\_vide} & src/trieHybride\_primitives.c, $l48-50$  & $\Theta(1)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Renvoie vrai si le trie est vide}} \\   \hline   
+    \textbf{creer\_mot} & src/trieHybride\_primitives.c, $l53-66$  & $\Theta(L)$ \\ \hline 
+    \multicolumn{3}{|l|}{\it{Créé le trie hybride représentant le mot passé en paramètre.}} \\  \hline
+    \textbf{ajouter\_trie\_hybride} & src/trieHybride\_primitives.c, $l175-205$  & $\Theta(log(n)+L)$ \\ \hline 
+  \end{tabular}
+\end{center}
+
+\paragraph{\textbf{Complexités}}
+Insertion (pareil pour recherche): Si le trie est plus ou moins equilibré, on divise par trois l'espace dans lequel on doit chercher le mot à chaque appel récursif. On a donc l'équation de réccurence suivante :
+  \[
+    T(n)=T\left(\frac{n}{3}\right)+\Theta(1)
+  \]
+  D'après la deuxième règle du theorème Maitre ($a=1,b=3$), on a $T(n)=log_3(n)$. Sachant que l'on parcourt forcément toute la chaine qui représente le mot, il faut prendre ceci en compte dans le calcul de la complexité. On a donc   la complexité suivante : $log_3(n)+L$, avec $L$ la longueur du mot que l'on cherche (ou insère).\\
+  Dans le cas ou le trie est totalement déséquillibré, on a une complexité proche de celle d'un arbre de la briandais. En effet, le trie hybride le plus déséquilibré est le trie qui n'a pas de fils gauche (ou droit). C'est le cas ou tout les mots ont été insérés dans l'ordre alphabetique(ou l'inverse de l'ordre alphabetique). Chaque noeud à alors deux fils, le premier représentant les mots commencant par la lettre contenue dans le noeud, et le second représentant les mots commençant par une autre lettre.
+
+\section{Fonctions avancées}
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+    \hline  \textbf{Fonctions} & \textbf{Emplacement} & \textbf{Complexité}\\  \hline
+    \textbf{recherche\_trie\_hybride} & src/trieHybride\_simple.c, $l7-36$  & $\Theta(log(n)+L)$ \\ \hline 
+    \textbf{comptage\_mots} & src/trieHybride\_simple.c, $l39-52$  & $\Theta(n)$ \\ \hline 
+    \textbf{afficher\_liste\_mots} & src/trieHybride\_simple.c, $l58-76$  & $\Theta(n)$ \\ \hline 
+    \textbf{liste\_mots} & src/trieHybride\_simple.c, $l81-101$  & $\Theta(n)$ \\ \hline 
+    \textbf{comptage\_nil} & src/trieHybride\_simple.c, $l106-116$  & $\Theta(n)$ \\ \hline 
+    \textbf{hauteur} & src/trieHybride\_simple.c, $l130-140$  & $\Theta(n)$ \\ \hline 
+    \textbf{profondeur\_moyenne} & src/trieHybride\_simple.c, $l145-154$  & $\Theta(n)$ \\ \hline 
+    \textbf{prefixe} & src/trieHybride\_simple.c, $l159-187$  & $O(n)$ \\ \hline 
+    \textbf{supprimer} & src/trieHybride\_simple.c, $l257-297$  & $\Theta(log(n))$ \\ \hline 
+  \end{tabular}
+\end{center}
+
+\subsection{Complexités}
+\paragraph{\textbf{Comptage\_mots}}
+Pour ces fonctions, dans tout les cas on parcourt l'ensemble de l'arbre. Si l'arbre est equilibré, on a l'équation de récurrence suivante :
+\[
+T(n)=3T\left(\frac{n}{3}\right)+\Theta(1)
+\] 
+D'après le cas 1 du théoreme Maitre, le resultat de cette équation est : 
+\[
+T(n)=n^{log_{3}3}=n \; \text{ avec } a=3, b=3, \epsilon=1
+\]
+Même principe pour afficher\_liste\_mots, liste\_mots, hauteur, profondeur\_moyenne et comptage\_nil.
+
+\paragraph{\textbf{Suppression}}
+Principe : On parcourt d'abord le trie pour trouver le noeud qui correspond a la fin du mot que l'on veut supprimer.
+Si le mot n'est pas présent, le trie reste inchangé. Une fois que l'on a trouvé ce noeud, on indique que celui-ci ne représente plus la fin d'un mot. Si ce noeud ne possede pas de fils $egal$, cela veut dire qu'il n'y a aucun mot dans l'arbre prefixé par celui que l'on veut supprimer. On peut donc supprimer ce noeud. Trois cas peuvent alors se produire : \\
+\begin{enumerate}
+\item Le noeud n'a aucun fils. On peut alors le supprimer sans se soucier de ses fils. 
+\item Le noeud a un seul fils (soit le gauche, soit le droit). Dans ce cas, peut remplacer le noeud à supprimer par son fils.
+\item Le noeud a deux fils (gauche et droit donc). Il faut alors trouver un remplaçant pour le noeud que l'on va supprimer. Le bon candidat est le minimum (le fils le plus a gauche, qui n'a pas de fils gauche) du fils droit, comme on le ferait dans un ABR. En effet, dans ce cas, on a un noeud qui contient un caractere plus grand que tout les elements du sous-arbre gauche, et plus petit que tout ceux du sous-arbre droit. Cela nous permet de garder les proprietes du trie hybride. De plus, comme le minimum n'a pas de fils gauche, on peut le remplacer par son fils droit sans problème.
+\end{enumerate}
+Une fois le noeud supprimé, il est possible que l'on doive supprimer le père de celui-ci. On effectue la suppression si la branche du milieu du père est vide, et que le père ne représente pas la fin d'un mot.
+\begin{algorithm}
+  \caption{Suppression Trie Hybride}
+  \begin{algorithmic}[1]
+    \Function{Suppression}{$T,mot$}
+    \If {$T$ est vide}
+    \State {\textbf{retourner}} $T$
+    \EndIf
+    \If{$lg(mot)=1$ \textbf{et} $premier(mot)=racine(T)$}\Comment{Noeud de la fin du mot}
+    \State $T.fin \gets \textbf{faux}$ \Comment{Le noeud ne représente plus la fin du mot} 
+    \If{$egal(T)$ est vide}
+    \State {\textbf{retourner}} $supprimer\_racine(T)$
+    \Else
+    \State {\textbf{retourner}} $T$
+    \EndIf
+    \ElsIf {$premier(mot)<racine(T)$}
+    \State $T.inferieur=suppression(T.inferieur,mot)$
+    \ElsIf {$premier(mot)>racine(T)$}
+    \State $T.superieur=suppression(T.superieur,mot)$
+    \Else
+    \State $T.egal=suppression(T.egal,reste(mot))$
+    \If {$T.egal$ est vide \textbf{et} $T.fin=\textbf{faux}$}
+    \State {\textbf{retourner}} $supprimer\_racine(T)$
+    \Else
+    \State {\textbf{retourner}} $T$
+    \EndIf
+    \EndIf
+    \State {\textbf{retourner}} $T$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+La fonction supprimer\_racine est la fonction qui permet de gérer les trois cas énoncés précédemment.
+
+\begin{algorithm}
+  \caption{supprimer\_racine}
+  \begin{algorithmic}[1]
+    \Function{supprimer\_racine}{$T$}
+    \If {$T.inferieur$ est vide \textbf{et} $T.superieur$ est vide}
+    \State {\textbf{liberer}} $T$
+    \State {\textbf{retourner}} $Trie$ $vide$
+    \ElsIf {$T.inferieur$ est vide}
+    \State $T \gets T.superieur$ \Comment{On met l'arbre de droite a la place de T}
+    \ElsIf {$T.superieur$ est vide}
+    \State $T \gets T.inferieur$ \Comment{On met l'arbre de gauche a la place de T}
+    \Else \Comment{Les sous-arbre droit et gauche ne sont pas vide}
+    \State $(T.superieur,min) \gets extraire\_min(T.superieur)$
+    \State $T \gets min$
+    \EndIf
+    \State {\textbf{retourner}} $T$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+La fonction extraire\_min est une fonction qui permet de recuperer le minimum d'un trie. Le pere du minimum reçoit alors le fils droit de celui. Le minimum que l'on recupère avec cette fonction n'a donc ni fils gauche, ni fils droit.
+
+\section{Fonctions complexes}
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+    \hline  \textbf{Fonctions} & \textbf{Emplacement} & \textbf{Complexité}\\  \hline
+    \textbf{conversion} & src/trieHybride\_complexe.c, $l4-49$  & $\Theta(n)$ \\ \hline
+    \textbf{equilibrer} & src/trieHybride\_complexe.c, $l70-101$  & $O(n^2)$ \\ \hline
+  \end{tabular}
+\end{center}
+
+Principe : La fonction d'équilibrage fonctionne dans le même esprit que celle des AVL. Dans un premier temps on appelle récursivement la fonction sur les trois sous-arbres. Ensuite, on calcule la difference de hauteur entre le sous-arbre gauche et le sous-arbre droit. Si cette différence est plus grande que deux, on effectue une rotation droite de l'arbre. De plus, si les deux fils du fils gauche ont une difference de hauteur plus grande (en valeur absolue) que -1, on effectue une rotation gauche sur ce fils. Si la différence de hauteur est plus petite que -2, on effectue le symétrique des opérations précédentes (i.e. les rotations gauche deviennent des rotations droites et inversement).
+\begin{algorithm}
+  \caption{Equilibrage Trie Hybride}
+  \begin{algorithmic}[1]
+    \Function{equilibrage}{$T$}
+    \If {$T$ est vide}
+    \State {\textbf{retourner}} $T$
+    \EndIf
+    \State $T.inferieur \gets equilibrage(T.inferieur)$
+    \State $T.egal \gets equilibrage(T.egal)$
+    \State $T.superieur \gets equilibrage(T.superieur)$
+    \State $diff \gets hauteur(t.inferieur)-hauteur(t.superieur)$
+    \If {$diff >= 2$}   
+    \If {$hauteur(t.inferieur.inferieur)-hauteur(t.inferieur.superieur) <= -1$}
+    \State $T.inferieur=rotG(T.inferieur)$
+    \EndIf  
+    \State $T=rotD(T)$
+    \ElsIf {$diff <= -2$}   
+    \If {$hauteur(t.superieur.inferieur)-hauteur(t.superieur.superieur) >= 1$}
+    \State $T.superieur=rotD(T.superieur)$
+    \EndIf  
+    \State $T=rotG(T)$
+    \EndIf
+    \State {\textbf{retourner}} $T$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+Les fonctions de rotation sont quasiment identiques a celles présentées en cours. Leur complexité est donc $\Theta(1)$. La complexité de la fonction d'équilibrage est $O(n^2)$, car pour chaque noeud on calcule la hauteur de ses filsdroit et gauche. On pourrait améliorer la complexité en ajoutant un champs $hauteur$ dans la structure, tenu à jour a chaque insertion/suppression.
+
+\chapter{Comparaison}
+
 \end{document}
