@@ -1,5 +1,7 @@
 include ../makefile.inc
 
+TEXFLAGS = -shell-escape
+
 FIGURES = figures
 
 all: rapport.pdf slides.pdf th.pdf
@@ -7,9 +9,10 @@ all: rapport.pdf slides.pdf th.pdf
 th.pdf : triehybride.tex
 	cd $(FIGURES) && make
 	pdflatex $<
+
 rapport.pdf: rapport.tex
 	cd $(FIGURES) && make
-	pdflatex $<
+	pdflatex $(TEXFLAGS) $<
 
 slides.pdf: slides.tex
 	cd $(FIGURES) && make
