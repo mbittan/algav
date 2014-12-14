@@ -468,4 +468,46 @@ Les fonctions de rotation sont quasiment identiques a celles présentées en cou
 
 \chapter{Comparaison}
 
+Pour comparer ces deux structures de données, nous prenons comme jeu de test 38 oeuvres de Shakespeare.
+
+\section{Temps d'exécution}
+
+Dans un premier temps, nous allons procéder à cinq tests de performances :
+\begin{itemize}
+\item insertion des mots de toutes ces oeuvres par ajouts successifs,
+\item insertion des mots de toutes ces oeuvres parallèlement puis fusion,
+\item suppression des mots de Hamlet de l'arbre comprenant toute les oeuvres,
+\item recherche des mots de All's Well et Hamlet dans l'arbre comprenant toute les oeuvres après suppression de Hamlet,
+\item comptage des mots de l'arbre l'arbre comprenant toute les oeuvres après suppression de Hamlet.
+\end{itemize}
+
+\begin{center}
+\includegraphics[scale=0.6]{figures/insert.png}
+\end{center}
+
+On remarque que les performances des deux structures sont très proches, voir identiques.
+
+\section{Caractéristiques de l'arbre}
+
+On va maintenant comparer les caractéristiques des arbres construits, à savoir la hauteur et la profondeur moyenne.
+\begin{center}
+\includegraphics[scale=0.6]{figures/trees.png}
+\end{center}
+
+On remarque que l'arbre de la Briandais semble bien meilleur, mais les réultats sont en fait trompeurs car l'arbre de la Briandais s'étale ``en largeur'', la chaîne des frères pouvant être relativement longue, et la profondeur étant la longueur du plus long mot plus un. Quant au trie hybride, il s'étend plus en profondeur, mais ne perd pas en terme de performances grace à ses complexités logarithmiques.
+
+\section{Occupation mémoire}
+
+Un dernier critère est l'occupation en mémoire de ces structures. En effet, les deux structures étant similaires au niveau des performances, le choix se fera au niveau de l'occupation mémoire.
+
+\begin{center}
+\includegraphics[scale=0.6]{figures/mem.png}
+\end{center}
+
+On remarque que le trie hybride est bien plus léger que l'arbre de la Briandais. Cela s'explique probablement par le fait que dans ce dernier, on a un noeud de plus par mot dans l'arbre pour stocker le caractère de fin de mot $\epsilon$.
+
+\section{Conclusion}
+
+Pour conclure, on choisira probablement le trie hybride par rapport à l'arbre de la Briandais car, à performances similaires, le trie hybride limite l'occupation mémoire du dictionnaire.
+
 \end{document}
