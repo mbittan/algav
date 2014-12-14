@@ -19,7 +19,7 @@ slides.pdf: slides.tex
 	pdflatex $<
 
 clean:
-	rm -f *.aux *.log *.gz *.pdf *~ *.nav *.snm *.toc *.vrb *.out
+	rm -f *.aux *.log *.gz *.pdf *~ *.nav *.snm *.toc *.vrb *.out *.pyg
 
 cleanall: clean
 	cd $(FIGURES) && make clean
