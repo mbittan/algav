@@ -8,7 +8,7 @@ all: $(FIGURES)
 	pdflatex $<
 
 clean:
-	rm -f *.aux *.log *.gz *.pdf *~
+	rm -f *.aux *.log *.gz *.pdf *~ *.png
 
 .PHONY: all clean
 
