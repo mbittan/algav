@@ -1,0 +1,8 @@
+set terminal pngcairo
+set output "trees.png"
+set xtic rotate by -45 scale 0
+set style data histogram
+set style histogram cluster gap 1
+set style fill solid 1.0 border -1
+plot [][0:40] 'trees.dat' using 2 t "Arbre de la Briandais", '' using 3:xtic(1) t "Trie hybride"
+

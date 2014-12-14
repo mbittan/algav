@@ -1,0 +1,9 @@
+set terminal pngcairo
+set output "insert.png"
+set xtic rotate by -45 scale 0
+set style data histogram
+set style histogram cluster gap 1
+set style fill solid 1.0 border -1
+set ylabel "Temps d'execution (en s)
+plot 'insert.dat' using 2 t "Arbre de la Briandais", '' using 3:xtic(1) t "Trie hybride"
+
